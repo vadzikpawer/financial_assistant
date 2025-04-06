@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from app import db
 from models import Transaction, BankAccount, Category, Recommendation
 import pandas as pd
-import requests
+from openai import OpenAI
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -15,10 +15,21 @@ logger = logging.getLogger(__name__)
 
 # AIML API configuration
 AIML_API_KEY = os.environ.get("AIML_API_KEY")
-AIML_API_URL = "https://aimlapi.com/api/v1/models/gemma-3-12b-api/infer"
+
+# Initialize OpenAI client with AIML API
+aiml_client = None
+if AIML_API_KEY:
+    try:
+        aiml_client = OpenAI(
+            base_url="https://api.aimlapi.com/v1",
+            api_key=AIML_API_KEY,
+        )
+        logger.info("AIML API client initialized successfully")
+    except Exception as e:
+        logger.error(f"Failed to initialize AIML API client: {str(e)}")
 
 # Global flag to track API status
-ai_api_active = True
+ai_api_active = True if aiml_client else False
 
 def generate_ai_recommendations(user_id):
     """
@@ -115,7 +126,7 @@ def generate_ai_recommendations(user_id):
         }
         
         # Check if AIML API is available before making the call
-        if ai_api_active and AIML_API_KEY:
+        if ai_api_active and aiml_client:
             logger.info("Using AIML API (Gemma 3) for recommendations")
             using_ai = True
             # Generate recommendations using AI
@@ -177,10 +188,10 @@ def get_recommendations_from_aiml(financial_data):
     Returns:
         list: List of recommendation dictionaries
     """
-    global ai_api_active
+    global ai_api_active, aiml_client
     
     # Check if AIML API is active and properly configured
-    if not ai_api_active or not AIML_API_KEY:
+    if not ai_api_active or not aiml_client:
         logger.warning("AIML API is not active or not configured. Using rule-based recommendations.")
         return get_rule_based_recommendations(financial_data)
     
@@ -216,41 +227,21 @@ def get_recommendations_from_aiml(financial_data):
         На основе этих данных, предложи 3-5 персонализированных рекомендаций для улучшения финансового состояния.
         """
         
-        # Prepare request for AIML API
-        headers = {
-            'Content-Type': 'application/json',
-            'Authorization': f'Bearer {AIML_API_KEY}'
-        }
-        
-        payload = {
-            'messages': [
-                {'role': 'system', 'content': system_prompt},
-                {'role': 'user', 'content': user_prompt}
-            ],
-            'max_tokens': 2000,
-            'temperature': 0.7,
-            'response_format': {'type': 'json_object'}
-        }
-        
         # Call AIML API
-        response = requests.post(AIML_API_URL, headers=headers, json=payload)
+        response = aiml_client.chat.completions.create(
+            model="google/gemma-3-12b-it",  # Use the correct model name
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt}
+            ],
+            temperature=0.7,
+            max_tokens=2000,
+            response_format={"type": "json_object"}
+        )
         
-        # Raise an exception if the request failed
-        response.raise_for_status()
-        
-        # Parse the response
-        response_data = response.json()
-        
-        if 'error' in response_data:
-            logger.error(f"AIML API error: {response_data['error']}")
-            return get_rule_based_recommendations(financial_data, api_error=True)
-        
-        # Extract result text
-        if 'choices' in response_data and len(response_data['choices']) > 0:
-            result_text = response_data['choices'][0]['message']['content']
-        else:
-            logger.error("No content found in AIML API response")
-            return get_rule_based_recommendations(financial_data)
+        # Extract result text from OpenAI response object
+        result_text = response.choices[0].message.content
+        logger.debug(f"AIML API raw response: {result_text}")
         
         # Try to parse JSON from response
         try:
@@ -280,17 +271,12 @@ def get_recommendations_from_aiml(financial_data):
             logger.debug(f"AIML API response: {result_text}")
             return get_rule_based_recommendations(financial_data)
             
-    except requests.exceptions.RequestException as e:
-        logger.error(f"AIML API error: {str(e)}")
+    except Exception as e:
+        logger.error(f"Error getting recommendations from AIML API: {str(e)}", exc_info=True)
         # Set the global flag to indicate API is not available
         ai_api_active = False
         # Return rule-based recommendations
         return get_rule_based_recommendations(financial_data, api_error=True)
-        
-    except Exception as e:
-        logger.error(f"Error getting recommendations from AIML API: {str(e)}", exc_info=True)
-        # Return rule-based recommendations
-        return get_rule_based_recommendations(financial_data)
 
 def get_rule_based_recommendations(financial_data, quota_exceeded=False, api_error=False):
     """
