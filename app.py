@@ -48,6 +48,7 @@ login_manager.init_app(app)
 login_manager.login_view = "auth.login"
 login_manager.login_message_category = "info"
 
+
 # Add security headers
 @app.after_request
 def add_security_headers(response):
@@ -62,19 +63,19 @@ def add_security_headers(response):
         "connect-src 'self'"
     )
     response.headers["Content-Security-Policy"] = csp
-    
+
     # Prevent XSS attacks
     response.headers["X-XSS-Protection"] = "1; mode=block"
-    
+
     # Prevent click-jacking
     response.headers["X-Frame-Options"] = "SAMEORIGIN"
-    
+
     # Prevent MIME-sniffing
     response.headers["X-Content-Type-Options"] = "nosniff"
-    
+
     # Referrer policy
     response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
-    
+
     return response
 
 

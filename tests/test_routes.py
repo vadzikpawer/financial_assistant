@@ -91,9 +91,7 @@ def test_register_route(client):
 def test_logout_route(client, test_user):
     """Test logout functionality"""
     # Login first
-    client.post(
-        "/login", data={"email": "test@example.com", "password": "password123"}
-    )
+    client.post("/login", data={"email": "test@example.com", "password": "password123"})
 
     # Then logout
     response = client.get("/logout", follow_redirects=True)

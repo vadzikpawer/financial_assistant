@@ -9,13 +9,13 @@ def app_context():
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///:memory:"
     app.config["TESTING"] = True
     app.config["WTF_CSRF_ENABLED"] = False
-    
+
     ctx = app.app_context()
     ctx.push()
     db.create_all()
-    
+
     yield app
-    
+
     db.session.remove()
     db.drop_all()
     ctx.pop()
@@ -60,10 +60,7 @@ def test_bank_account(app_context, test_user):
 
 @pytest.fixture(scope="function")
 def authenticated_client(client, test_user):
-    client.post(
-        "/login", 
-        data={"email": "test@example.com", "password": "password123"}
-    )
+    client.post("/login", data={"email": "test@example.com", "password": "password123"})
     return client
 
 
