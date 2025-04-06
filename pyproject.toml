@@ -19,6 +19,7 @@ dependencies = [
     "deepseek-ai>=0.0.1",
     "python-dotenv>=1.1.0",
     "deeperseek",
+    "requests>=2.32.3",
 ]
 
 [[tool.uv.index]]
