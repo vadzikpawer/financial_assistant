@@ -6,7 +6,7 @@ from app import db
 from models import Transaction, BankAccount, Category, Recommendation
 import pandas as pd
 import requests
-from deepseek import DeepSeekLLM  # Import DeepSeek library
+from deepseek_ai import DeepSeekAI  # Import DeepSeek AI library
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -24,8 +24,8 @@ deepseek_client = None
 # Initialize DeepSeek client
 if DEEPSEEK_API_KEY:
     try:
-        deepseek_client = DeepSeekLLM(
-            model="deepseek-chat",
+        # Initialize DeepSeek AI client with the API key
+        deepseek_client = DeepSeekAI(
             api_key=DEEPSEEK_API_KEY
         )
         logger.info("DeepSeek AI client initialized successfully")
@@ -233,6 +233,7 @@ def get_recommendations_from_deepseek(financial_data):
         
         # Call DeepSeek API
         response = deepseek_client.chat(
+            model="deepseek-chat",
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt}
@@ -242,7 +243,7 @@ def get_recommendations_from_deepseek(financial_data):
         )
         
         # Extract result text
-        result_text = response.text
+        result_text = response.choices[0].message.content
         
         # Try to parse JSON from response
         try:
