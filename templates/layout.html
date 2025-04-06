@@ -187,76 +187,8 @@
     <!-- Main JS -->
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     
-    <!-- Material UI Interactions -->
-    <script>
-        // Drawer functionality
-        const menuToggle = document.getElementById('menuToggle');
-        const sideDrawer = document.getElementById('sideDrawer');
-        const drawerOverlay = document.getElementById('drawerOverlay');
-        
-        if (menuToggle && sideDrawer && drawerOverlay) {
-            menuToggle.addEventListener('click', function() {
-                sideDrawer.classList.toggle('active');
-                drawerOverlay.classList.toggle('active');
-                document.body.style.overflow = sideDrawer.classList.contains('active') ? 'hidden' : '';
-            });
-            
-            drawerOverlay.addEventListener('click', function() {
-                sideDrawer.classList.remove('active');
-                drawerOverlay.classList.remove('active');
-                document.body.style.overflow = '';
-            });
-        }
-        
-        // User dropdown
-        const userMenuToggle = document.getElementById('userMenuToggle');
-        const userDropdown = document.getElementById('userDropdown');
-        
-        if (userMenuToggle && userDropdown) {
-            userMenuToggle.addEventListener('click', function(e) {
-                e.stopPropagation();
-                userDropdown.style.display = userDropdown.style.display === 'none' ? 'block' : 'none';
-            });
-            
-            document.addEventListener('click', function(e) {
-                if (userDropdown.style.display === 'block' && !userDropdown.contains(e.target) && e.target !== userMenuToggle) {
-                    userDropdown.style.display = 'none';
-                }
-            });
-        }
-        
-        // Ripple effect for buttons
-        const buttons = document.querySelectorAll('.md-btn, .md-app-bar-action, .md-bottom-nav-item');
-        
-        buttons.forEach(button => {
-            button.addEventListener('click', function(e) {
-                const ripple = document.createElement('span');
-                const rect = button.getBoundingClientRect();
-                
-                const size = Math.max(rect.width, rect.height);
-                const x = e.clientX - rect.left - size / 2;
-                const y = e.clientY - rect.top - size / 2;
-                
-                ripple.style.width = ripple.style.height = `${size}px`;
-                ripple.style.left = `${x}px`;
-                ripple.style.top = `${y}px`;
-                ripple.className = 'ripple';
-                
-                // Remove existing ripples
-                const currentRipple = button.querySelector('.ripple');
-                if (currentRipple) {
-                    currentRipple.remove();
-                }
-                
-                button.appendChild(ripple);
-                
-                // Remove ripple after animation
-                setTimeout(() => {
-                    ripple.remove();
-                }, 600);
-            });
-        });
-    </script>
+    <!-- Note: Material UI Interactions now handled by main.js -->
+    
     
     <!-- Service Worker Registration -->
     <script>

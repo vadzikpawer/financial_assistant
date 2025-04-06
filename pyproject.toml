@@ -20,6 +20,7 @@ dependencies = [
     "python-dotenv>=1.1.0",
     "deeperseek",
     "requests>=2.32.3",
+    "coverage>=7.8.0",
 ]
 
 [[tool.uv.index]]

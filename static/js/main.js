@@ -28,7 +28,60 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Add touch optimizations
     detectTouchCapability();
+    
+    // Initialize drawer functionality
+    initDrawer();
 });
+
+// Initialize drawer functionality with proper expansion handling
+function initDrawer() {
+    const menuToggle = document.getElementById('menuToggle');
+    const sideDrawer = document.getElementById('sideDrawer');
+    const drawerOverlay = document.getElementById('drawerOverlay');
+    const drawerItems = document.querySelectorAll('.md-drawer-item');
+    
+    if (menuToggle && sideDrawer && drawerOverlay) {
+        menuToggle.addEventListener('click', function() {
+            sideDrawer.classList.toggle('active');
+            drawerOverlay.classList.toggle('active');
+            document.body.style.overflow = sideDrawer.classList.contains('active') ? 'hidden' : '';
+        });
+        
+        drawerOverlay.addEventListener('click', function() {
+            sideDrawer.classList.remove('active');
+            drawerOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+        
+        // Ensure drawer items close the drawer when clicked on mobile
+        drawerItems.forEach(item => {
+            item.addEventListener('click', function() {
+                if (window.innerWidth < 992) {
+                    sideDrawer.classList.remove('active');
+                    drawerOverlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+        });
+    }
+    
+    // User dropdown
+    const userMenuToggle = document.getElementById('userMenuToggle');
+    const userDropdown = document.getElementById('userDropdown');
+    
+    if (userMenuToggle && userDropdown) {
+        userMenuToggle.addEventListener('click', function(e) {
+            e.stopPropagation();
+            userDropdown.style.display = userDropdown.style.display === 'none' ? 'block' : 'none';
+        });
+        
+        document.addEventListener('click', function(e) {
+            if (userDropdown.style.display === 'block' && !userDropdown.contains(e.target) && e.target !== userMenuToggle) {
+                userDropdown.style.display = 'none';
+            }
+        });
+    }
+}
 
 // Enable copy to clipboard functionality
 function copyToClipboard(text, button) {
