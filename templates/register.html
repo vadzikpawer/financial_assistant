@@ -1,0 +1,81 @@
+{% extends "layout.html" %}
+
+{% block title %}Регистрация{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card bg-dark border-0 shadow-sm">
+            <div class="card-body p-4">
+                <div class="text-center mb-4">
+                    <i class="fas fa-user-plus fa-3x text-primary mb-3"></i>
+                    <h2 class="card-title">Создание аккаунта</h2>
+                    <p class="text-muted">Создайте новый аккаунт, чтобы пользоваться ФинАссистентом</p>
+                </div>
+                
+                <form method="POST" action="{{ url_for('auth.register') }}">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Имя пользователя</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                            <input type="text" class="form-control" id="username" name="username" required>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="password" class="form-label">Пароль</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                            <input type="password" class="form-control" id="password" name="password" required 
+                                   minlength="8" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}">
+                        </div>
+                        <small class="form-text text-muted">
+                            Пароль должен содержать не менее 8 символов, включая цифры, строчные и прописные буквы.
+                        </small>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">Зарегистрироваться</button>
+                    </div>
+                </form>
+                
+                <div class="mt-4 text-center">
+                    <p>Уже есть аккаунт? <a href="{{ url_for('auth.login') }}">Войти</a></p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card bg-dark border-0 shadow-sm mt-4">
+            <div class="card-body p-4">
+                <h5 class="card-title text-center mb-3">Преимущества регистрации</h5>
+                <ul class="list-group list-group-flush border-0">
+                    <li class="list-group-item bg-transparent text-light border-secondary">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        Подключение к банковским счетам
+                    </li>
+                    <li class="list-group-item bg-transparent text-light border-secondary">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        Анализ транзакций с помощью ИИ
+                    </li>
+                    <li class="list-group-item bg-transparent text-light border-secondary">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        Персональные рекомендации по экономии
+                    </li>
+                    <li class="list-group-item bg-transparent text-light border-secondary">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        Наглядные финансовые отчёты
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

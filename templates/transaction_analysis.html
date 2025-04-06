@@ -1,0 +1,260 @@
+{% extends "layout.html" %}
+
+{% block title %}Анализ транзакций{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h1 class="mb-4">Анализ транзакций</h1>
+        
+        {% if results.error %}
+        <div class="alert alert-danger" role="alert">
+            <h4 class="alert-heading">Ошибка анализа</h4>
+            <p>{{ results.error }}</p>
+        </div>
+        {% else %}
+        
+        <!-- Overview Card -->
+        <div class="row mb-4">
+            <div class="col-md-4 mb-4 mb-md-0">
+                <div class="card bg-dark border-0 h-100">
+                    <div class="card-body">
+                        <h5 class="card-title text-muted mb-3">Общие расходы</h5>
+                        <h2 class="display-5 mb-0">{{ results.total_spent|round|int|format_number }} ₽</h2>
+                        <p class="text-muted mt-2">За весь период</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4 mb-md-0">
+                <div class="card bg-dark border-0 h-100">
+                    <div class="card-body">
+                        <h5 class="card-title text-muted mb-3">Текущий месяц</h5>
+                        <h2 class="display-5 mb-0">{{ results.current_month_spent|round|int|format_number }} ₽</h2>
+                        <p class="text-muted mt-2">Расходы в этом месяце</p>
+                        
+                        {% if results.month_over_month_change != 0 %}
+                        <div class="mt-2">
+                            <span class="badge {% if results.month_over_month_change > 0 %}bg-danger{% else %}bg-success{% endif %}">
+                                <i class="fas fa-{% if results.month_over_month_change > 0 %}arrow-up{% else %}arrow-down{% endif %} me-1"></i>
+                                {{ results.month_over_month_change|abs|round(1) }}% по сравнению с прошлым месяцем
+                            </span>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card bg-dark border-0 h-100">
+                    <div class="card-body">
+                        <h5 class="card-title text-muted mb-3">Общий доход</h5>
+                        <h2 class="display-5 mb-0">{{ results.total_income|round|int|format_number }} ₽</h2>
+                        <p class="text-muted mt-2">За весь период</p>
+                        
+                        {% if results.total_income > 0 and results.total_spent > 0 %}
+                        <div class="mt-2">
+                            <span class="badge {% if results.total_income > results.total_spent %}bg-success{% else %}bg-danger{% endif %}">
+                                Баланс: {{ (results.total_income - results.total_spent)|round|int|format_number }} ₽
+                            </span>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Charts Row -->
+        <div class="row mb-4">
+            <div class="col-md-6 mb-4 mb-md-0">
+                <div class="card bg-dark border-0 h-100">
+                    <div class="card-header bg-transparent border-0">
+                        <h5 class="mb-0">Топ категории расходов</h5>
+                        <p class="text-muted small mb-0">За текущий месяц</p>
+                    </div>
+                    <div class="card-body">
+                        {% if results.top_spending_categories %}
+                        <canvas id="topCategoriesChart" height="250"></canvas>
+                        
+                        <div class="mt-4">
+                            <h6>Распределение расходов</h6>
+                            <div class="list-group list-group-flush border-0">
+                            {% for category in results.top_spending_categories %}
+                                <div class="list-group-item bg-transparent d-flex justify-content-between align-items-center px-0 py-2 border-secondary">
+                                    <span>{{ category.name }}</span>
+                                    <span>{{ category.amount|round|int|format_number }} ₽</span>
+                                </div>
+                            {% endfor %}
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-chart-pie fa-3x text-muted mb-3"></i>
+                            <p>Недостаточно данных для отображения графика</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card bg-dark border-0 h-100">
+                    <div class="card-header bg-transparent border-0">
+                        <h5 class="mb-0">Расходы по дням недели</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if results.day_of_week_spending %}
+                        <canvas id="dayOfWeekChart" height="250"></canvas>
+                        
+                        <div class="mt-4">
+                            <h6>Дни с наибольшими расходами</h6>
+                            <div class="list-group list-group-flush border-0">
+                            {% for day in results.day_of_week_spending|sort(attribute='amount', reverse=True) %}
+                                <div class="list-group-item bg-transparent d-flex justify-content-between align-items-center px-0 py-2 border-secondary">
+                                    <span>{{ day.day_of_week }}</span>
+                                    <span>{{ day.amount|round|int|format_number }} ₽</span>
+                                </div>
+                                {% if loop.index == 3 %}{% break %}{% endif %}
+                            {% endfor %}
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-chart-bar fa-3x text-muted mb-3"></i>
+                            <p>Недостаточно данных для отображения графика</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- More Stats and Unusual Transactions -->
+        <div class="row">
+            <div class="col-md-6 mb-4 mb-md-0">
+                <div class="card bg-dark border-0 h-100">
+                    <div class="card-header bg-transparent border-0">
+                        <h5 class="mb-0">Основные показатели</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group list-group-flush border-0">
+                            <div class="list-group-item bg-transparent d-flex justify-content-between align-items-center px-0 py-3 border-secondary">
+                                <div>
+                                    <h6 class="mb-0">Средний размер транзакции</h6>
+                                    <p class="text-muted small mb-0">Средняя сумма одной операции расхода</p>
+                                </div>
+                                <h5 class="mb-0">{{ results.avg_transaction_amount|round|int|format_number }} ₽</h5>
+                            </div>
+                            
+                            <div class="list-group-item bg-transparent d-flex justify-content-between align-items-center px-0 py-3 border-secondary">
+                                <div>
+                                    <h6 class="mb-0">Средние ежедневные расходы</h6>
+                                    <p class="text-muted small mb-0">Сколько в среднем вы тратите за день</p>
+                                </div>
+                                <h5 class="mb-0">{{ results.daily_avg_spending|round|int|format_number }} ₽</h5>
+                            </div>
+                            
+                            <div class="list-group-item bg-transparent d-flex justify-content-between align-items-center px-0 py-3 border-secondary">
+                                <div>
+                                    <h6 class="mb-0">Расходы предыдущего месяца</h6>
+                                    <p class="text-muted small mb-0">Сумма расходов за предыдущий месяц</p>
+                                </div>
+                                <h5 class="mb-0">{{ results.prev_month_spent|round|int|format_number }} ₽</h5>
+                            </div>
+                            
+                            {% if results.total_income > 0 %}
+                            <div class="list-group-item bg-transparent d-flex justify-content-between align-items-center px-0 py-3 border-secondary">
+                                <div>
+                                    <h6 class="mb-0">Процент сбережений</h6>
+                                    <p class="text-muted small mb-0">Сколько процентов дохода вы сохраняете</p>
+                                </div>
+                                <h5 class="mb-0">
+                                    {% if results.total_income > results.total_spent %}
+                                    {{ ((results.total_income - results.total_spent) / results.total_income * 100)|round(1) }}%
+                                    {% else %}
+                                    0%
+                                    {% endif %}
+                                </h5>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card bg-dark border-0 h-100">
+                    <div class="card-header bg-transparent border-0">
+                        <h5 class="mb-0">Необычные транзакции</h5>
+                        <p class="text-muted small mb-0">Операции, которые выделяются из общей картины</p>
+                    </div>
+                    <div class="card-body">
+                        {% if results.unusual_transactions %}
+                        <div class="list-group list-group-flush border-0">
+                            {% for transaction in results.unusual_transactions %}
+                            <div class="list-group-item bg-transparent px-0 py-3 border-secondary">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 class="mb-1">{{ transaction.description }}</h6>
+                                        <p class="text-muted small mb-0">{{ transaction.date.strftime('%d.%m.%Y') }}</p>
+                                    </div>
+                                    <h5 class="text-danger mb-0">{{ transaction.amount|round|int|format_number }} ₽</h5>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                            <p>Необычных транзакций не обнаружено</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        {% if not results.error and results.top_spending_categories %}
+        // Top categories chart
+        const topCategoriesCtx = document.getElementById('topCategoriesChart').getContext('2d');
+        const categoryLabels = [
+            {% for category in results.top_spending_categories %}
+            "{{ category.name }}",
+            {% endfor %}
+        ];
+        const categoryData = [
+            {% for category in results.top_spending_categories %}
+            {{ category.amount }},
+            {% endfor %}
+        ];
+        
+        createDoughnutChart(topCategoriesCtx, categoryLabels, categoryData);
+        {% endif %}
+        
+        {% if not results.error and results.day_of_week_spending %}
+        // Day of week chart
+        const dayOfWeekCtx = document.getElementById('dayOfWeekChart').getContext('2d');
+        const dayLabels = [
+            {% for day in results.day_of_week_spending %}
+            "{{ day.day_of_week }}",
+            {% endfor %}
+        ];
+        const dayData = [
+            {% for day in results.day_of_week_spending %}
+            {{ day.amount }},
+            {% endfor %}
+        ];
+        
+        createBarChart(dayOfWeekCtx, dayLabels, dayData, 'Расходы (₽)');
+        {% endif %}
+    });
+</script>
+{% endblock %}

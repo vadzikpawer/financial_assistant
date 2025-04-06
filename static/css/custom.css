@@ -1,0 +1,222 @@
+/* Custom CSS for FinAssistant */
+
+/* Additional styles beyond Bootstrap */
+
+/* Card hover effect */
+.card-hover {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-hover:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Bank connection card styles */
+.bank-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+.bank-card .bank-logo {
+    height: 40px;
+    object-fit: contain;
+}
+
+.bank-status {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.bank-status.connected {
+    background-color: var(--bs-success);
+}
+
+.bank-status.disconnected {
+    background-color: var(--bs-danger);
+}
+
+/* Transaction list styles */
+.transaction-item {
+    transition: background-color 0.2s ease;
+}
+
+.transaction-item:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.transaction-amount {
+    font-weight: 500;
+}
+
+.transaction-amount.expense {
+    color: var(--bs-danger);
+}
+
+.transaction-amount.income {
+    color: var(--bs-success);
+}
+
+/* Dashboard stats */
+.stat-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-icon {
+    position: absolute;
+    bottom: -15px;
+    right: -15px;
+    font-size: 5rem;
+    opacity: 0.1;
+}
+
+/* Category badges */
+.category-badge {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+    font-size: 0.8rem;
+}
+
+/* Recommendation card styles */
+.recommendation-card {
+    border-left: 4px solid var(--bs-warning);
+}
+
+.savings-highlight {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--bs-success);
+}
+
+/* Chart container */
+.chart-container {
+    position: relative;
+    height: 300px;
+}
+
+/* Accordion custom styling */
+.custom-accordion .accordion-button:not(.collapsed) {
+    background-color: var(--bs-dark);
+    color: var(--bs-light);
+}
+
+.custom-accordion .accordion-button:focus {
+    box-shadow: none;
+    border-color: rgba(255, 255, 255, 0.125);
+}
+
+.custom-accordion .accordion-button::after {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23fff'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+}
+
+/* Custom scrollbar for dark theme */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #212529;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #495057;
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #6c757d;
+}
+
+/* Footer adjustments */
+.footer {
+    margin-top: auto;
+}
+
+/* Utility classes */
+.text-truncate-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+/* Animation effects */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.pulse-animation {
+    animation: pulse 2s infinite;
+}
+
+/* Filter form styles */
+.filter-form {
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+}
+
+.filter-form.show {
+    max-height: 500px;
+    opacity: 1;
+}
+
+/* Custom button styles */
+.btn-rounded {
+    border-radius: 50px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+/* Heatmap styles for calendar view */
+.heatmap-day {
+    width: 30px;
+    height: 30px;
+    margin: 2px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+.heatmap-0 { background-color: #495057; }
+.heatmap-1 { background-color: #6c757d; }
+.heatmap-2 { background-color: #5d8aa8; }
+.heatmap-3 { background-color: #4682b4; }
+.heatmap-4 { background-color: #3498db; }
+.heatmap-5 { background-color: #2980b9; }
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .desktop-only {
+        display: none !important;
+    }
+    
+    .card-body {
+        padding: 1rem;
+    }
+    
+    .display-4 {
+        font-size: 2rem;
+    }
+    
+    .display-5 {
+        font-size: 1.8rem;
+    }
+}

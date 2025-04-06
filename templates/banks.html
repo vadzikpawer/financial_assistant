@@ -1,0 +1,128 @@
+{% extends "layout.html" %}
+
+{% block title %}Банковские счета{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Мои банковские счета</h1>
+            <a href="{{ url_for('banks.connect_bank') }}" class="btn btn-primary">
+                <i class="fas fa-plus-circle me-1"></i> Подключить новый банк
+            </a>
+        </div>
+        
+        {% if accounts %}
+        <div class="row">
+            {% for account in accounts %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card bg-dark border-0 h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="mb-0">{{ account.bank_name }}</h5>
+                            <i class="fas fa-university text-primary"></i>
+                        </div>
+                        <p class="card-text text-muted mb-1">{{ account.account_type }}</p>
+                        <p class="card-text text-muted small mb-3">№ {{ account.account_number[-6:] }}</p>
+                        
+                        <h3 class="mb-3">{{ account.balance|round|int|format_number }} {{ account.currency }}</h3>
+                        
+                        <div class="d-flex justify-content-between align-items-center mb-3 small text-muted">
+                            <span>
+                                <i class="fas fa-sync me-1"></i> 
+                                {% if account.last_sync %}
+                                Обновлено: {{ account.last_sync.strftime('%d.%m.%Y %H:%M') }}
+                                {% else %}
+                                Не синхронизировано
+                                {% endif %}
+                            </span>
+                        </div>
+                        
+                        <div class="d-flex gap-2">
+                            <a href="{{ url_for('banks.sync_bank_account', account_id=account.id) }}" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-sync me-1"></i> Синхронизировать
+                            </a>
+                            
+                            <button type="button" class="btn btn-sm btn-outline-danger" 
+                                    data-bs-toggle="modal" data-bs-target="#deleteModal{{ account.id }}">
+                                <i class="fas fa-trash me-1"></i> Удалить
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Delete Modal -->
+                <div class="modal fade" id="deleteModal{{ account.id }}" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content bg-dark">
+                            <div class="modal-header border-secondary">
+                                <h5 class="modal-title">Подтверждение удаления</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Вы действительно хотите удалить счёт "{{ account.bank_name }} - {{ account.account_type }}"?</p>
+                                <p class="text-danger">Это действие также удалит все связанные транзакции и не может быть отменено.</p>
+                            </div>
+                            <div class="modal-footer border-secondary">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                <form action="{{ url_for('banks.delete_bank_account', account_id=account.id) }}" method="post">
+                                    <button type="submit" class="btn btn-danger">Удалить</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="card bg-dark border-0">
+            <div class="card-body text-center py-5">
+                <i class="fas fa-university fa-3x text-muted mb-3"></i>
+                <h4>У вас пока нет подключенных банковских счетов</h4>
+                <p class="text-muted">Подключите свои банковские счета, чтобы начать анализ финансов</p>
+                <a href="{{ url_for('banks.connect_bank') }}" class="btn btn-primary mt-2">
+                    <i class="fas fa-plus-circle me-1"></i> Подключить банк
+                </a>
+            </div>
+        </div>
+        {% endif %}
+        
+        <div class="card bg-dark border-0 mt-4">
+            <div class="card-body">
+                <h5 class="card-title mb-3">Информация о подключении</h5>
+                <div class="alert alert-info" role="alert">
+                    <h5 class="alert-heading"><i class="fas fa-shield-alt me-2"></i>Безопасность ваших данных</h5>
+                    <p>ФинАссистент использует современные методы шифрования для защиты ваших банковских данных. Мы не храним пароли от ваших банковских аккаунтов.</p>
+                    <hr>
+                    <p class="mb-0">Для подключения банка используется защищенный протокол авторизации, который обеспечивает безопасный доступ к вашим финансовым данным без раскрытия учетных данных.</p>
+                </div>
+                
+                <h5 class="mt-4">Поддерживаемые банки</h5>
+                <div class="d-flex flex-wrap gap-3 mt-3">
+                    <div class="p-3 bg-dark border border-secondary rounded d-flex align-items-center">
+                        <i class="fas fa-credit-card me-2 text-primary"></i>
+                        <span>Тинькофф Банк</span>
+                    </div>
+                    <div class="p-3 bg-dark border border-secondary rounded d-flex align-items-center">
+                        <i class="fas fa-credit-card me-2 text-primary"></i>
+                        <span>Сбербанк</span>
+                    </div>
+                    <div class="p-3 bg-dark border border-secondary rounded d-flex align-items-center">
+                        <i class="fas fa-credit-card me-2 text-primary"></i>
+                        <span>ВТБ</span>
+                    </div>
+                    <div class="p-3 bg-dark border border-secondary rounded d-flex align-items-center">
+                        <i class="fas fa-credit-card me-2 text-primary"></i>
+                        <span>Альфа-Банк</span>
+                    </div>
+                    <div class="p-3 bg-dark border border-secondary rounded d-flex align-items-center">
+                        <i class="fas fa-credit-card me-2 text-primary"></i>
+                        <span>Газпромбанк</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

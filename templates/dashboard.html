@@ -1,0 +1,257 @@
+{% extends "layout.html" %}
+
+{% block title %}Дашборд{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h1 class="mb-4">Дашборд</h1>
+        
+        {% if not accounts %}
+        <div class="alert alert-info" role="alert">
+            <h4 class="alert-heading">Добро пожаловать в ФинАссистент!</h4>
+            <p>Для начала работы подключите ваши банковские счета.</p>
+            <hr>
+            <p class="mb-0">
+                <a href="{{ url_for('banks.connect_bank') }}" class="btn btn-primary">
+                    <i class="fas fa-plus-circle me-1"></i> Подключить банк
+                </a>
+            </p>
+        </div>
+        {% else %}
+        
+        <!-- Balance Overview -->
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card bg-dark border-0 h-100">
+                    <div class="card-body">
+                        <h5 class="card-title text-muted mb-3">Общий баланс</h5>
+                        <h2 class="display-5 mb-0">{{ total_balance|round|int|format_number }} ₽</h2>
+                        <p class="text-muted mt-2">По всем счетам</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-8">
+                <div class="card bg-dark border-0 h-100">
+                    <div class="card-body">
+                        <h5 class="card-title text-muted mb-3">Счета</h5>
+                        <div class="row">
+                            {% for account in accounts %}
+                            <div class="col-md-6 mb-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="me-3">
+                                        <i class="fas fa-university fa-2x text-primary"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0">{{ account.bank_name }}</h6>
+                                        <p class="small text-muted mb-0">{{ account.account_type }}</p>
+                                        <p class="mb-0 fw-bold">{{ account.balance|round|int|format_number }} {{ account.currency }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Charts Row -->
+        <div class="row mb-4">
+            <div class="col-md-6 mb-4 mb-md-0">
+                <div class="card bg-dark border-0 h-100">
+                    <div class="card-header bg-transparent border-0">
+                        <h5 class="mb-0">Расходы по категориям</h5>
+                        <p class="text-muted small mb-0">За последние 30 дней</p>
+                    </div>
+                    <div class="card-body">
+                        {% if category_labels and category_labels|length > 0 %}
+                        <canvas id="categoryChart" height="250"></canvas>
+                        {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-chart-pie fa-3x text-muted mb-3"></i>
+                            <p>Недостаточно данных для отображения графика</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card bg-dark border-0 h-100">
+                    <div class="card-header bg-transparent border-0">
+                        <h5 class="mb-0">Ежедневные расходы</h5>
+                        <p class="text-muted small mb-0">За последние 7 дней</p>
+                    </div>
+                    <div class="card-body">
+                        {% if daily_labels and daily_labels|length > 0 %}
+                        <canvas id="dailyChart" height="250"></canvas>
+                        {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>
+                            <p>Недостаточно данных для отображения графика</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recent Transactions and Recommendations -->
+        <div class="row">
+            <div class="col-md-7 mb-4 mb-md-0">
+                <div class="card bg-dark border-0">
+                    <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="mb-0">Последние транзакции</h5>
+                        </div>
+                        <a href="{{ url_for('transactions.transactions') }}" class="btn btn-sm btn-outline-primary">
+                            Все транзакции
+                        </a>
+                    </div>
+                    <div class="card-body p-0">
+                        {% if latest_transactions %}
+                        <div class="table-responsive">
+                            <table class="table table-hover table-dark mb-0">
+                                <tbody>
+                                    {% for transaction in latest_transactions %}
+                                    <tr>
+                                        <td class="text-nowrap">
+                                            {{ transaction.transaction_date.strftime('%d.%m.%Y') }}
+                                        </td>
+                                        <td>
+                                            <div>{{ transaction.description }}</div>
+                                            {% if transaction.merchant %}
+                                            <small class="text-muted">{{ transaction.merchant }}</small>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-end text-nowrap">
+                                            <span class="{{ 'text-danger' if transaction.is_expense else 'text-success' }}">
+                                                {{ transaction.amount|round|int|format_number }} {{ transaction.currency }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-receipt fa-3x text-muted mb-3"></i>
+                            <p>Нет транзакций для отображения</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-5">
+                <div class="card bg-dark border-0">
+                    <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="mb-0">Рекомендации</h5>
+                        </div>
+                        <a href="{{ url_for('banks.recommendations') }}" class="btn btn-sm btn-outline-primary">
+                            Все рекомендации
+                        </a>
+                    </div>
+                    <div class="card-body">
+                        {% if recommendations %}
+                        <div class="list-group list-group-flush border-0">
+                            {% for recommendation in recommendations %}
+                            <div class="list-group-item bg-transparent border-bottom border-secondary py-3">
+                                <div class="d-flex">
+                                    <div class="me-3">
+                                        <i class="fas fa-lightbulb fa-lg text-warning"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-1">{{ recommendation.title }}</h6>
+                                        <p class="mb-1 small">{{ recommendation.description.split('\n')[0] }}</p>
+                                        {% if recommendation.potential_savings > 0 %}
+                                        <span class="badge bg-success">
+                                            Экономия до {{ recommendation.potential_savings|round|int|format_number }} ₽
+                                        </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-lightbulb fa-3x text-muted mb-3"></i>
+                            <p>Нет рекомендаций для отображения</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Only initialize charts if data is available
+        {% if category_labels and category_labels|length > 0 %}
+        // Category Chart
+        const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+        const categoryChart = new Chart(categoryCtx, {
+            type: 'doughnut',
+            data: {
+                labels: {{ category_labels|tojson }},
+                datasets: [{
+                    data: {{ category_values|tojson }},
+                    backgroundColor: [
+                        '#3498db', '#2ecc71', '#9b59b6', '#e74c3c', '#f39c12',
+                        '#1abc9c', '#d35400', '#c0392b', '#16a085', '#7f8c8d'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                    }
+                }
+            }
+        });
+        {% endif %}
+
+        {% if daily_labels and daily_labels|length > 0 %}
+        // Daily Chart
+        const dailyCtx = document.getElementById('dailyChart').getContext('2d');
+        const dailyChart = new Chart(dailyCtx, {
+            type: 'bar',
+            data: {
+                labels: {{ daily_labels|tojson }},
+                datasets: [{
+                    label: 'Расходы (₽)',
+                    data: {{ daily_values|tojson }},
+                    backgroundColor: '#3498db',
+                    borderColor: '#2980b9',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        {% endif %}
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,133 @@
+{% extends "layout.html" %}
+
+{% block title %}Рекомендации{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Рекомендации по экономии</h1>
+            <form action="{{ url_for('banks.generate_new_recommendations') }}" method="post">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-sync me-1"></i> Обновить рекомендации
+                </button>
+            </form>
+        </div>
+        
+        {% if recommendations %}
+        <div class="row">
+            {% for recommendation in recommendations %}
+            <div class="col-md-6 mb-4">
+                <div class="card bg-dark border-0 h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="me-3">
+                                <i class="fas fa-lightbulb fa-2x text-warning"></i>
+                            </div>
+                            <div>
+                                <h4 class="card-title mb-0">{{ recommendation.title }}</h4>
+                                {% if recommendation.category %}
+                                <span class="badge bg-secondary">
+                                    {% if recommendation.category.icon %}
+                                    <i class="fas fa-{{ recommendation.category.icon }} me-1"></i>
+                                    {% endif %}
+                                    {{ recommendation.category.name }}
+                                </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            {% for paragraph in recommendation.description.split('\n\n') %}
+                            <p>{{ paragraph|replace('\n', '<br>')|safe }}</p>
+                            {% endfor %}
+                        </div>
+                        
+                        {% if recommendation.potential_savings > 0 %}
+                        <div class="alert alert-success">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-piggy-bank fa-2x me-3"></i>
+                                <div>
+                                    <h6 class="mb-0">Потенциальная экономия</h6>
+                                    <h4 class="mb-0">{{ recommendation.potential_savings|round|int|format_number }} ₽</h4>
+                                    <small>в месяц</small>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        <p class="card-text text-muted small mt-3">
+                            Создано: {{ recommendation.created_at.strftime('%d.%m.%Y') }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="card bg-dark border-0">
+            <div class="card-body text-center py-5">
+                <i class="fas fa-lightbulb fa-3x text-muted mb-3"></i>
+                <h4>У вас пока нет рекомендаций</h4>
+                <p class="text-muted">Подключите банковские счета, чтобы получить персонализированные рекомендации по экономии</p>
+                <div class="mt-3">
+                    <a href="{{ url_for('banks.connect_bank') }}" class="btn btn-primary me-2">
+                        <i class="fas fa-plus-circle me-1"></i> Подключить банк
+                    </a>
+                    <form action="{{ url_for('banks.generate_new_recommendations') }}" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-outline-secondary">
+                            <i class="fas fa-sync me-1"></i> Сгенерировать рекомендации
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+        <div class="card bg-dark border-0 mt-4">
+            <div class="card-body">
+                <h5 class="card-title mb-3">Как работают рекомендации</h5>
+                <p>Наш ИИ-алгоритм анализирует ваши финансовые привычки и находит возможности для экономии денег. Рекомендации основаны на вашей истории транзакций и обновляются по мере поступления новых данных.</p>
+                
+                <div class="row mt-4">
+                    <div class="col-md-4 mb-3">
+                        <div class="d-flex">
+                            <div class="me-3">
+                                <i class="fas fa-chart-pie fa-2x text-primary"></i>
+                            </div>
+                            <div>
+                                <h6>Анализ расходов</h6>
+                                <p class="small text-muted">Мы анализируем ваши расходы по категориям и находим закономерности</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4 mb-3">
+                        <div class="d-flex">
+                            <div class="me-3">
+                                <i class="fas fa-search-dollar fa-2x text-primary"></i>
+                            </div>
+                            <div>
+                                <h6>Поиск возможностей</h6>
+                                <p class="small text-muted">Определяем категории, где можно сократить расходы</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4 mb-3">
+                        <div class="d-flex">
+                            <div class="me-3">
+                                <i class="fas fa-lightbulb fa-2x text-primary"></i>
+                            </div>
+                            <div>
+                                <h6>Персонализированные советы</h6>
+                                <p class="small text-muted">Даем конкретные рекомендации по экономии</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
