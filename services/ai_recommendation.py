@@ -5,25 +5,36 @@ from datetime import datetime, timedelta
 from app import db
 from models import Transaction, BankAccount, Category, Recommendation
 import pandas as pd
+import requests
+from deepseek import DeepSeekLLM  # Import DeepSeek library
+from dotenv import load_dotenv
 
-# the newest OpenAI model is "gpt-4o" which was released May 13, 2024.
-# do not change this unless explicitly requested by the user
-from openai import OpenAI
-from openai.types.error import RateLimitError, APIError
+# Load environment variables
+load_dotenv()
 
 logger = logging.getLogger(__name__)
 
-# OPENAI API configuration
-OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
+# DeepSeek configuration
+DEEPSEEK_API_KEY = os.environ.get("DEEPSEEK_API_KEY")
 
 # Global flag to track API status
-openai_api_active = True
+ai_api_active = True
+deepseek_client = None
 
-if OPENAI_API_KEY:
-    openai = OpenAI(api_key=OPENAI_API_KEY)
+# Initialize DeepSeek client
+if DEEPSEEK_API_KEY:
+    try:
+        deepseek_client = DeepSeekLLM(
+            model="deepseek-chat",
+            api_key=DEEPSEEK_API_KEY
+        )
+        logger.info("DeepSeek AI client initialized successfully")
+    except Exception as e:
+        logger.error(f"Failed to initialize DeepSeek client: {str(e)}")
+        ai_api_active = False
 else:
-    logger.warning("No OpenAI API key found. AI recommendations will be disabled.")
-    openai_api_active = False
+    logger.warning("No DeepSeek API key found. AI recommendations will be disabled.")
+    ai_api_active = False
 
 def generate_ai_recommendations(user_id):
     """
@@ -35,7 +46,7 @@ def generate_ai_recommendations(user_id):
     Returns:
         tuple: (recommendations_count, using_ai_flag)
     """
-    global openai_api_active
+    global ai_api_active
     using_ai = False
     
     try:
@@ -109,7 +120,7 @@ def generate_ai_recommendations(user_id):
         
         stats["category_spending"] = category_spending
         
-        # Create JSON for OpenAI
+        # Create JSON for AI
         data_for_ai = {
             "transactions_count": len(transactions),
             "date_range": {
@@ -119,16 +130,16 @@ def generate_ai_recommendations(user_id):
             "financial_stats": stats
         }
         
-        # Check if OpenAI API is available before making the call
-        if openai_api_active and OPENAI_API_KEY:
-            logger.info("Using OpenAI API for recommendations")
+        # Check if DeepSeek API is available before making the call
+        if ai_api_active and deepseek_client:
+            logger.info("Using DeepSeek AI for recommendations")
             using_ai = True
         else:
-            logger.info("Using rule-based recommendations (OpenAI API not available)")
+            logger.info("Using rule-based recommendations (DeepSeek API not available)")
             using_ai = False
         
         # Generate recommendations
-        ai_recommendations = get_recommendations_from_openai(data_for_ai)
+        ai_recommendations = get_recommendations_from_deepseek(data_for_ai)
         
         # Process and save recommendations
         for rec in ai_recommendations:
@@ -171,9 +182,9 @@ def generate_ai_recommendations(user_id):
             logger.error("Failed to add fallback recommendation")
             return 0, False
 
-def get_recommendations_from_openai(financial_data):
+def get_recommendations_from_deepseek(financial_data):
     """
-    Use OpenAI to generate personalized recommendations
+    Use DeepSeek AI to generate personalized recommendations
     
     Args:
         financial_data (dict): Dictionary with financial stats
@@ -181,11 +192,11 @@ def get_recommendations_from_openai(financial_data):
     Returns:
         list: List of recommendation dictionaries
     """
-    global openai_api_active
+    global ai_api_active, deepseek_client
     
-    # Check if OpenAI API is active and properly configured
-    if not openai_api_active or not OPENAI_API_KEY:
-        logger.warning("OpenAI API is not active or not configured. Using rule-based recommendations.")
+    # Check if DeepSeek API is active and properly configured
+    if not ai_api_active or not deepseek_client:
+        logger.warning("DeepSeek API is not active or not configured. Using rule-based recommendations.")
         return get_rule_based_recommendations(financial_data)
     
     try:
@@ -220,63 +231,84 @@ def get_recommendations_from_openai(financial_data):
         На основе этих данных, предложи 3-5 персонализированных рекомендаций для улучшения финансового состояния.
         """
         
-        response = openai.chat.completions.create(
-            model="gpt-4o",
+        # Call DeepSeek API
+        response = deepseek_client.chat(
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt}
             ],
-            response_format={"type": "json_object"},
-            temperature=0.7
+            temperature=0.7,
+            max_tokens=2000
         )
         
-        result_text = response.choices[0].message.content
-        result = json.loads(result_text)
+        # Extract result text
+        result_text = response.text
         
-        # Handle different formats that might be returned
-        if isinstance(result, dict) and "recommendations" in result:
-            return result["recommendations"]
-        elif isinstance(result, list):
-            return result
-        else:
-            logger.error(f"Unexpected format from OpenAI: {result}")
+        # Try to parse JSON from response
+        try:
+            # Find JSON in response (sometimes it might be within a markdown code block)
+            if "```json" in result_text:
+                json_start = result_text.find("```json") + 7
+                json_end = result_text.find("```", json_start)
+                result_text = result_text[json_start:json_end].strip()
+            elif "```" in result_text:
+                json_start = result_text.find("```") + 3
+                json_end = result_text.find("```", json_start)
+                result_text = result_text[json_start:json_end].strip()
+                
+            # Parse the JSON
+            result = json.loads(result_text)
+            
+            # Handle different formats that might be returned
+            if isinstance(result, dict) and "recommendations" in result:
+                return result["recommendations"]
+            elif isinstance(result, list):
+                return result
+            else:
+                logger.error(f"Unexpected format from DeepSeek: {result}")
+                return get_rule_based_recommendations(financial_data)
+        except json.JSONDecodeError:
+            logger.error("Failed to parse JSON from DeepSeek response")
+            logger.debug(f"DeepSeek response: {result_text}")
             return get_rule_based_recommendations(financial_data)
             
-    except RateLimitError as e:
-        logger.error(f"OpenAI API quota exceeded: {str(e)}")
+    except requests.exceptions.RequestException as e:
+        logger.error(f"DeepSeek API error: {str(e)}")
         # Set the global flag to indicate API is not available
-        openai_api_active = False
+        ai_api_active = False
         # Return rule-based recommendations
-        return get_rule_based_recommendations(financial_data, quota_exceeded=True)
-    
-    except APIError as e:
-        logger.error(f"OpenAI API error: {str(e)}")
-        # Return rule-based recommendations
-        return get_rule_based_recommendations(financial_data)
+        return get_rule_based_recommendations(financial_data, api_error=True)
         
     except Exception as e:
-        logger.error(f"Error getting recommendations from OpenAI: {str(e)}", exc_info=True)
+        logger.error(f"Error getting recommendations from DeepSeek: {str(e)}", exc_info=True)
         # Return rule-based recommendations
         return get_rule_based_recommendations(financial_data)
 
-def get_rule_based_recommendations(financial_data, quota_exceeded=False):
+def get_rule_based_recommendations(financial_data, quota_exceeded=False, api_error=False):
     """
-    Generate rule-based recommendations when the OpenAI API is unavailable
+    Generate rule-based recommendations when the AI API is unavailable
     
     Args:
         financial_data (dict): Dictionary with financial stats
         quota_exceeded (bool): Whether the quota was exceeded
+        api_error (bool): Whether there was an API error
         
     Returns:
         list: List of recommendation dictionaries
     """
     recommendations = []
     
-    # Add notification about API quota if needed
+    # Add notification about API issues if needed
     if quota_exceeded:
         recommendations.append({
             "title": "Уведомление о сервисе рекомендаций",
             "description": "В данный момент сервис AI-рекомендаций временно недоступен из-за превышения лимита API запросов. Мы предоставляем базовые рекомендации по экономии. Пожалуйста, попробуйте обновить рекомендации позже.",
+            "potential_savings": 0.0
+        })
+    elif api_error:
+        recommendations.append({
+            "title": "Уведомление о сервисе рекомендаций",
+            "description": "В данный момент сервис AI-рекомендаций временно недоступен из-за технических проблем. Мы предоставляем базовые рекомендации по экономии. Пожалуйста, попробуйте обновить рекомендации позже.",
             "potential_savings": 0.0
         })
     
@@ -296,6 +328,16 @@ def get_rule_based_recommendations(financial_data, quota_exceeded=False):
             "title": "Сократите расходы на доставку еды",
             "description": "Доставка еды обычно стоит на 30-50% дороже, чем приготовление пищи дома. Попробуйте готовить большие порции на несколько дней вперед, чтобы сэкономить время и деньги.",
             "potential_savings": 3000.0
+        },
+        {
+            "title": "Откладывайте 10% дохода",
+            "description": "Попробуйте автоматически откладывать 10% от всех доходов в день получения зарплаты. Создайте отдельный сберегательный счет для этой цели и настройте автоматические переводы.",
+            "potential_savings": 5000.0
+        },
+        {
+            "title": "Используйте кэшбэк и бонусные программы",
+            "description": "Подключите банковские карты с кэшбэком и используйте программы лояльности в магазинах, где вы регулярно совершаете покупки. Это позволит вам вернуть часть ваших расходов.",
+            "potential_savings": 1500.0
         }
     ]
     
@@ -311,11 +353,34 @@ def get_rule_based_recommendations(financial_data, quota_exceeded=False):
             sorted_categories = sorted(category_spending.items(), key=lambda x: x[1], reverse=True)
             
             if sorted_categories:
-                top_category, amount = sorted_categories[0]
+                # Generate recommendations for top 2 categories
+                for idx, (category, amount) in enumerate(sorted_categories[:2]):
+                    saving_percent = 0.15  # 15% savings goal
+                    potential_savings = round(amount * saving_percent)
+                    
+                    if idx == 0:  # First category (highest spending)
+                        recommendations.append({
+                            "title": f"Сократите расходы на категорию '{category}'",
+                            "description": f"Это ваша самая большая категория расходов - {int(amount)} ₽. Рассмотрите способы сократить эти траты на 15-20%, например, сравнивайте цены перед покупкой или ищите альтернативные решения.",
+                            "potential_savings": potential_savings
+                        })
+                    else:  # Second category
+                        recommendations.append({
+                            "title": f"Оптимизируйте расходы в категории '{category}'",
+                            "description": f"Вы тратите значительную сумму ({int(amount)} ₽) на '{category}'. Подумайте, как можно оптимизировать эти расходы, например, искать скидки, акции или более выгодные предложения.",
+                            "potential_savings": potential_savings
+                        })
+                        
+        # If we have monthly spending data, compare current month with previous
+        if "current_month_spent" in stats and "prev_month_spent" in stats:
+            current = stats["current_month_spent"]
+            previous = stats["prev_month_spent"]
+            
+            if previous > 0 and current > previous * 1.15:  # Spending increased by more than 15%
                 recommendations.append({
-                    "title": f"Сократите расходы на {top_category}",
-                    "description": f"Это ваша самая большая категория расходов - {int(amount)} ₽. Рассмотрите способы сократить эти траты на 15-20%, например, сравнивайте цены перед покупкой или ищите альтернативные решения.",
-                    "potential_savings": round(amount * 0.15)
+                    "title": "Контролируйте рост расходов",
+                    "description": f"В текущем месяце ваши расходы ({int(current)} ₽) превышают расходы предыдущего месяца ({int(previous)} ₽) на {int((current/previous - 1) * 100)}%. Проанализируйте, в каких категориях выросли расходы, и попробуйте их сократить.",
+                    "potential_savings": round((current - previous) * 0.5)  # 50% of the increase
                 })
     
     # Combine recommendations
@@ -326,6 +391,6 @@ def get_rule_based_recommendations(financial_data, quota_exceeded=False):
             recommendations.extend(basic_recommendations[:remaining_slots])
     else:
         # Use basic recommendations if we couldn't generate any
-        recommendations = basic_recommendations
+        recommendations = basic_recommendations[:3]
     
     return recommendations

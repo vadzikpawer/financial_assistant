@@ -201,8 +201,8 @@ def recommendations():
     # Generate new recommendations if none exist
     if not recommendations:
         try:
-            # Check if OpenAI API key is available and use AI recommendations
-            if os.environ.get("OPENAI_API_KEY"):
+            # Check if DeepSeek API key is available and use AI recommendations
+            if os.environ.get("DEEPSEEK_API_KEY"):
                 from services.ai_recommendation import generate_ai_recommendations
                 count, using_ai = generate_ai_recommendations(current_user.id)
                 logger.info(f"Generated {count} AI recommendations, using_ai={using_ai}")
@@ -224,7 +224,7 @@ def recommendations():
 def generate_new_recommendations():
     try:
         # Check if we should use AI-powered recommendations
-        if os.environ.get("OPENAI_API_KEY"):
+        if os.environ.get("DEEPSEEK_API_KEY"):
             from services.ai_recommendation import generate_ai_recommendations
             count, using_ai = generate_ai_recommendations(current_user.id)
             if using_ai:
