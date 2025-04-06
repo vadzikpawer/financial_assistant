@@ -1,4 +1,5 @@
 import logging
+import os
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flask_login import login_required, current_user
 from app import db
@@ -196,17 +197,34 @@ def recommendations():
     
     # Generate new recommendations if none exist
     if not recommendations:
-        from services.recommendation_engine import generate_recommendations
-        generate_recommendations(current_user.id)
+        # Check if OpenAI API key is available and use AI recommendations
+        if os.environ.get("OPENAI_API_KEY"):
+            from services.ai_recommendation import generate_ai_recommendations
+            generate_ai_recommendations(current_user.id)
+        else:
+            # Fall back to rule-based recommendations
+            from services.recommendation_engine import generate_recommendations
+            generate_recommendations(current_user.id)
+            
         recommendations = Recommendation.query.filter_by(user_id=current_user.id).order_by(Recommendation.created_at.desc()).all()
     
-    return render_template('recommendations.html', recommendations=recommendations)
+    # Check if we're using AI recommendations
+    using_ai = os.environ.get("OPENAI_API_KEY") is not None
+    
+    return render_template('recommendations.html', recommendations=recommendations, using_ai=using_ai)
 
 @banks_bp.route('/recommendations/generate', methods=['POST'])
 @login_required
 def generate_new_recommendations():
-    from services.recommendation_engine import generate_recommendations
-    count = generate_recommendations(current_user.id)
+    # Check if we should use AI-powered recommendations
+    if os.environ.get("OPENAI_API_KEY"):
+        from services.ai_recommendation import generate_ai_recommendations
+        count = generate_ai_recommendations(current_user.id)
+        flash(f'Generated {count} новых ИИ-рекомендаций для вас.', 'success')
+    else:
+        # Fall back to rule-based recommendations
+        from services.recommendation_engine import generate_recommendations
+        count = generate_recommendations(current_user.id)
+        flash(f'Generated {count} новых рекомендаций для вас.', 'success')
     
-    flash(f'Generated {count} new recommendations for you.', 'success')
     return redirect(url_for('banks.recommendations'))

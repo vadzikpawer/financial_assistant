@@ -236,7 +236,7 @@ def analyze_transactions(transactions_df):
         
         return results
     except Exception as e:
-        logger.error(f"Error analyzing transactions: {str(e)}")
+        logger.error(f"Error analyzing transactions: {str(e)}", exc_info=True)
         return {
             'error': str(e),
             'total_spent': 0,

@@ -6,7 +6,14 @@
 <div class="row mb-4">
     <div class="col-md-12">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1>Рекомендации по экономии</h1>
+            <div>
+                <h1>Рекомендации по экономии</h1>
+                {% if using_ai %}
+                <span class="badge bg-info">
+                    <i class="fas fa-robot me-1"></i> Powered by AI
+                </span>
+                {% endif %}
+            </div>
             <form action="{{ url_for('banks.generate_new_recommendations') }}" method="post">
                 <button type="submit" class="btn btn-primary">
                     <i class="fas fa-sync me-1"></i> Обновить рекомендации
@@ -87,7 +94,18 @@
         <div class="card bg-dark border-0 mt-4">
             <div class="card-body">
                 <h5 class="card-title mb-3">Как работают рекомендации</h5>
-                <p>Наш ИИ-алгоритм анализирует ваши финансовые привычки и находит возможности для экономии денег. Рекомендации основаны на вашей истории транзакций и обновляются по мере поступления новых данных.</p>
+                {% if using_ai %}
+                <div class="alert alert-info">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-robot fa-2x me-3"></i>
+                        <div>
+                            <p class="mb-0"><strong>ИИ-рекомендации активированы!</strong></p>
+                            <p class="mb-0 small">Рекомендации создаются с помощью OpenAI GPT-4o для более персонализированных и точных советов.</p>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                <p>Наш {% if using_ai %}продвинутый ИИ-алгоритм{% else %}алгоритм{% endif %} анализирует ваши финансовые привычки и находит возможности для экономии денег. Рекомендации основаны на вашей истории транзакций и обновляются по мере поступления новых данных.</p>
                 
                 <div class="row mt-4">
                     <div class="col-md-4 mb-3">

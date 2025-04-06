@@ -88,8 +88,8 @@ def generate_recommendations(user_id):
                             description=f"Вы тратите значительную часть своего бюджета на {top_category.name}. "
                                        f"Попробуйте сократить эти расходы на 15%, это позволит вам сэкономить "
                                        f"около {potential_savings:.0f} ₽ в месяц.",
-                            potential_savings=potential_savings,
-                            category_id=top_category_id
+                            potential_savings=float(potential_savings),
+                            category_id=int(top_category_id)
                         )
                         recommendations.append(recommendation)
         
@@ -118,7 +118,7 @@ def generate_recommendations(user_id):
                     if np.std(amounts) / np.mean(amounts) < 0.1:  # Low variance in amounts
                         potential_subscriptions.append({
                             'merchant': merchant,
-                            'amount': np.mean(amounts),
+                            'amount': float(np.mean(amounts)),
                             'count': len(monthly_charges)
                         })
             
@@ -137,7 +137,7 @@ def generate_recommendations(user_id):
                                f"Проверьте, все ли из них вам действительно нужны. "
                                f"Отключение ненужных подписок может сэкономить до {total_subscription_cost:.0f} ₽ в месяц.\n\n"
                                f"{subscription_text}",
-                    potential_savings=total_subscription_cost / 2  # Assume half could be cancelled
+                    potential_savings=float(total_subscription_cost / 2)  # Assume half could be cancelled
                 )
                 recommendations.append(recommendation)
         
@@ -161,8 +161,8 @@ def generate_recommendations(user_id):
                             description=f"Вы тратите около {monthly_dining:.0f} ₽ в месяц на кафе и рестораны. "
                                        f"Приготовление еды дома вместо походов в рестораны может сэкономить "
                                        f"до {potential_savings:.0f} ₽ ежемесячно.",
-                            potential_savings=potential_savings,
-                            category_id=restaurant_category.id
+                            potential_savings=float(potential_savings),
+                            category_id=int(restaurant_category.id)
                         )
                         recommendations.append(recommendation)
         
@@ -187,7 +187,7 @@ def generate_recommendations(user_id):
                                f"Финансовые эксперты рекомендуют сберегать не менее 20% дохода. "
                                f"Попробуйте увеличить ежемесячные сбережения на {additional_savings_needed:.0f} ₽, "
                                f"чтобы достичь рекомендуемого уровня.",
-                    potential_savings=additional_savings_needed
+                    potential_savings=float(additional_savings_needed)
                 )
                 recommendations.append(recommendation)
         
@@ -209,7 +209,7 @@ def generate_recommendations(user_id):
                                    f"Платежи картой легче отследить и проанализировать. "
                                    f"Уменьшение использования наличных поможет вам лучше контролировать расходы "
                                    f"и может сэкономить до {potential_savings:.0f} ₽ в месяц.",
-                        potential_savings=potential_savings
+                        potential_savings=float(potential_savings)
                     )
                     recommendations.append(recommendation)
         
@@ -221,7 +221,7 @@ def generate_recommendations(user_id):
         
         return len(recommendations)
     except Exception as e:
-        logger.error(f"Error generating recommendations: {str(e)}")
+        logger.error(f"Error generating recommendations: {str(e)}", exc_info=True)
         db.session.rollback()
         
         # Add a fallback recommendation
