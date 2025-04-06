@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 210 297" width="150" height="150">
+  <!-- Koschei (The immortal treasure keeper) -->
+  <g>
+    <!-- Robe -->
+    <path d="M105 80 C85 90, 70 110, 65 150 C60 175, 60 200, 70 230 C80 240, 95 245, 105 245 C115 245, 130 240, 140 230 C150 200, 150 175, 145 150 C140 110, 125 90, 105 80 Z" fill="#444466" stroke="#333" stroke-width="2"/>
+    
+    <!-- Decorative patterns -->
+    <path d="M80 140 L130 140 M75 170 L135 170 M80 200 L130 200" stroke="#5555aa" stroke-width="1.5"/>
+    
+    <!-- Skeletal body -->
+    <line x1="105" y1="90" x2="105" y2="230" stroke="#bbbbbb" stroke-width="5"/>
+    <line x1="90" y1="120" x2="120" y2="120" stroke="#bbbbbb" stroke-width="5"/>
+    <line x1="85" y1="140" x2="125" y2="140" stroke="#bbbbbb" stroke-width="3"/>
+    <line x1="80" y1="160" x2="130" y2="160" stroke="#bbbbbb" stroke-width="3"/>
+    
+    <!-- Skull head -->
+    <circle cx="105" cy="65" r="15" fill="#eeeeee" stroke="#333" stroke-width="1.5"/>
+    <circle cx="98" cy="60" r="3" fill="#000000" stroke="none"/>
+    <circle cx="112" cy="60" r="3" fill="#000000" stroke="none"/>
+    <path d="M100 75 A 10 5 0 0 0 110 75" fill="none" stroke="#000000" stroke-width="1.5"/>
+    <path d="M95 55 L115 55 L115 65 L95 65 Z" fill="#eeeeee" stroke="#333" stroke-width="1"/>
+    <path d="M95 65 L115 65 L110 75 L100 75 Z" fill="#eeeeee" stroke="#333" stroke-width="1"/>
+    
+    <!-- Crown -->
+    <path d="M90 50 L90 40 L120 40 L120 50" fill="none" stroke="#f5d442" stroke-width="3"/>
+    <path d="M90 40 L95 30 L105 40 L115 30 L120 40" fill="none" stroke="#f5d442" stroke-width="3"/>
+    <circle cx="95" cy="35" r="2" fill="#ff5555"/>
+    <circle cx="105" cy="36" r="2" fill="#55ff55"/>
+    <circle cx="115" cy="35" r="2" fill="#5555ff"/>
+    
+    <!-- Treasure -->
+    <circle cx="80" cy="185" r="10" fill="#f5d442" stroke="#996600" stroke-width="1.5"/>
+    <circle cx="130" cy="185" r="10" fill="#f5d442" stroke="#996600" stroke-width="1.5"/>
+    <path d="M75 180 L85 180 M75 185 L85 185 M75 190 L85 190" stroke="#996600" stroke-width="1"/>
+    <path d="M125 180 L135 180 M125 185 L135 185 M125 190 L135 190" stroke="#996600" stroke-width="1"/>
+    
+    <!-- Hands holding treasure -->
+    <path d="M70 185 C60 180, 50 175, 40 165 C45 170, 50 180, 60 185" fill="none" stroke="#bbbbbb" stroke-width="3"/>
+    <path d="M140 185 C150 180, 160 175, 170 165 C165 170, 160 180, 150 185" fill="none" stroke="#bbbbbb" stroke-width="3"/>
+  </g>
+</svg>

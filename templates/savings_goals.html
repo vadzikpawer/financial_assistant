@@ -1,0 +1,334 @@
+{% extends 'layout.html' %}
+
+{% block title %}Цели по сбережениям{% endblock %}
+
+{% block styles %}
+<style>
+    .goal-card {
+        transition: transform 0.3s ease;
+        border-left: 5px solid #6c757d;
+    }
+    
+    .goal-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .goal-card.achieved {
+        border-left-color: #28a745;
+    }
+    
+    .goal-card.not-on-track {
+        border-left-color: #dc3545;
+    }
+    
+    .progress-character {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 100%;
+        display: flex;
+        align-items: flex-end;
+        z-index: 1;
+        pointer-events: none;
+    }
+    
+    .progress-character img {
+        height: 60px;
+        transform: translateX(var(--progress-x));
+        transition: transform 0.5s ease;
+    }
+    
+    .character-container {
+        position: relative;
+        height: 75px;
+        margin-top: 10px;
+    }
+    
+    .progress-bar-container {
+        height: 15px;
+        background-color: #e9ecef;
+        border-radius: 30px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .celebration-modal .character-image {
+        max-height: 200px;
+    }
+    
+    .add-goal-btn {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        z-index: 100;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+    
+    .summary-card {
+        border-radius: 15px;
+        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+        color: white;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="display-5">Цели по сбережениям</h1>
+    </div>
+
+    <!-- Summary card -->
+    <div class="card summary-card mb-4 p-3">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5 class="card-title">Ваши сбережения</h5>
+                    <h3 class="mb-0">{{ total_saved|format_number }} ₽</h3>
+                    <small>из {{ total_target|format_number }} ₽</small>
+                </div>
+                <div class="col-md-8">
+                    <h5 class="card-title">Общий прогресс</h5>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar bg-success" role="progressbar" 
+                             style="width: {{ overall_progress }}%;" 
+                             aria-valuenow="{{ overall_progress }}" 
+                             aria-valuemin="0" 
+                             aria-valuemax="100">
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between mt-1">
+                        <small>0 ₽</small>
+                        <small>{{ total_target|format_number }} ₽</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Goals list -->
+    <div class="row">
+        {% if goals %}
+            {% for goal in goals %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100 goal-card {% if goal.is_achieved %}achieved{% elif not goal.is_on_track %}not-on-track{% endif %}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ goal.title }}</h5>
+                        
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div>
+                                <strong>{{ goal.current_amount|format_number }} ₽</strong> 
+                                из 
+                                <strong>{{ goal.target_amount|format_number }} ₽</strong>
+                            </div>
+                            <small class="text-muted">
+                                {% if goal.days_remaining %}
+                                    {{ goal.days_remaining }} дней осталось
+                                {% else %}
+                                    Бессрочная цель
+                                {% endif %}
+                            </small>
+                        </div>
+                        
+                        <div class="character-container">
+                            <div class="progress-bar-container">
+                                <div class="progress-bar {% if goal.is_on_track %}bg-success{% else %}bg-danger{% endif %}" 
+                                     role="progressbar" 
+                                     style="width: {{ goal.progress_percentage }}%;" 
+                                     aria-valuenow="{{ goal.progress_percentage }}" 
+                                     aria-valuemin="0" 
+                                     aria-valuemax="100">
+                                </div>
+                            </div>
+                            
+                            <div class="progress-character">
+                                <img src="{{ url_for('static', filename='img/' + characters[goal.character_type].image) }}" 
+                                     alt="{{ characters[goal.character_type].name }}"
+                                     style="--progress-x: calc({{ goal.progress_percentage }}% - 30px);">
+                            </div>
+                        </div>
+                        
+                        {% if goal.is_achieved %}
+                        <div class="badge bg-success mt-2">Достигнуто!</div>
+                        {% elif not goal.is_on_track %}
+                        <div class="badge bg-danger mt-2">Отстает от графика</div>
+                        {% else %}
+                        <div class="badge bg-success mt-2">На верном пути</div>
+                        {% endif %}
+                        
+                        <div class="d-flex justify-content-between mt-3">
+                            <a href="{{ url_for('savings.view_savings_goal', goal_id=goal.id) }}" class="btn btn-sm btn-outline-primary">Подробнее</a>
+                            
+                            {% if goal.is_achieved %}
+                            <button type="button" class="btn btn-sm btn-success celebrate-btn" data-goal-id="{{ goal.id }}">
+                                Отпраздновать!
+                            </button>
+                            {% else %}
+                            <button type="button" class="btn btn-sm btn-outline-secondary update-btn" data-goal-id="{{ goal.id }}" data-bs-toggle="modal" data-bs-target="#updateModal">
+                                Обновить сумму
+                            </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12">
+                <div class="card bg-light">
+                    <div class="card-body text-center py-5">
+                        <h4>У вас пока нет целей по сбережениям</h4>
+                        <p class="mb-4">Создайте свою первую цель по сбережениям и начните путь к финансовой свободе!</p>
+                        <a href="{{ url_for('savings.new_savings_goal') }}" class="btn btn-primary">Создать первую цель</a>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Floating action button -->
+{% if goals %}
+<a href="{{ url_for('savings.new_savings_goal') }}" class="add-goal-btn btn btn-primary">
+    <i class="fas fa-plus"></i>
+</a>
+{% endif %}
+
+<!-- Update Amount Modal -->
+<div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateModalLabel">Обновить сумму сбережений</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="updateForm">
+                    <input type="hidden" id="goalId" name="goalId" value="">
+                    <div class="mb-3">
+                        <label for="currentAmount" class="form-label">Текущая сумма</label>
+                        <div class="input-group">
+                            <input type="number" step="0.01" min="0" class="form-control" id="currentAmount" name="currentAmount" required>
+                            <span class="input-group-text">₽</span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                <button type="button" class="btn btn-primary" id="saveAmount">Сохранить</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Celebration Modal -->
+<div class="modal fade" id="celebrationModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content celebration-modal">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title">Поздравляем с достижением!</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <div class="py-4">
+                    <img src="" alt="Character" class="character-image mb-4">
+                    <h3 class="celebration-title mb-3">Вы достигли своей цели!</h3>
+                    <p class="celebration-message lead">Великолепная работа! Продолжайте в том же духе!</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-bs-dismiss="modal">Спасибо!</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handle update amount button click
+        const updateBtns = document.querySelectorAll('.update-btn');
+        updateBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const goalId = this.getAttribute('data-goal-id');
+                document.getElementById('goalId').value = goalId;
+                
+                // Find the current amount for this goal
+                const goalCard = this.closest('.goal-card');
+                const amountText = goalCard.querySelector('strong').textContent.trim();
+                const amount = parseFloat(amountText.replace(/\s/g, '').replace('₽', ''));
+                
+                document.getElementById('currentAmount').value = amount;
+            });
+        });
+        
+        // Handle save amount button click
+        document.getElementById('saveAmount').addEventListener('click', function() {
+            const goalId = document.getElementById('goalId').value;
+            const amount = document.getElementById('currentAmount').value;
+            
+            fetch(`/savings_goals/${goalId}/update_amount`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ amount: amount }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Close the modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('updateModal'));
+                modal.hide();
+                
+                // Refresh the page to show updated values
+                window.location.reload();
+            })
+            .catch(error => {
+                console.error('Error updating amount:', error);
+                alert('Произошла ошибка при обновлении суммы. Пожалуйста, попробуйте снова.');
+            });
+        });
+        
+        // Handle celebrate button click
+        const celebrateBtns = document.querySelectorAll('.celebrate-btn');
+        celebrateBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const goalId = this.getAttribute('data-goal-id');
+                
+                fetch(`/savings_goals/celebrate/${goalId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Update celebration modal content
+                    const characterImage = document.querySelector('.celebration-modal .character-image');
+                    characterImage.src = `/static/img/${data.character.image}`;
+                    characterImage.alt = data.character.name;
+                    
+                    document.querySelector('.celebration-message').textContent = data.message;
+                    
+                    // Show celebration modal
+                    const celebrationModal = new bootstrap.Modal(document.getElementById('celebrationModal'));
+                    celebrationModal.show();
+                })
+                .catch(error => {
+                    console.error('Error celebrating:', error);
+                    alert('Произошла ошибка. Пожалуйста, попробуйте снова.');
+                });
+            });
+        });
+    });
+</script>
+{% endblock %}

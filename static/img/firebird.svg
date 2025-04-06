@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 210 297" width="150" height="150">
+  <!-- Firebird (Жар-птица) -->
+  <g>
+    <!-- Body -->
+    <path d="M105 80 C85 110, 85 150, 105 180 C125 150, 125 110, 105 80 Z" fill="#f5a442" stroke="#333" stroke-width="2"/>
+    
+    <!-- Feathers -->
+    <path d="M105 80 C95 70, 85 65, 75 70 C85 80, 95 90, 105 80 Z" fill="#f57542" stroke="#333" stroke-width="1.5"/>
+    <path d="M105 80 C115 70, 125 65, 135 70 C125 80, 115 90, 105 80 Z" fill="#f57542" stroke="#333" stroke-width="1.5"/>
+    
+    <!-- Tail -->
+    <path d="M100 180 C90 200, 80 220, 75 240 C85 220, 95 200, 105 180 Z" fill="#f5d442" stroke="#333" stroke-width="1.5"/>
+    <path d="M110 180 C120 200, 130 220, 135 240 C125 220, 115 200, 105 180 Z" fill="#f5d442" stroke="#333" stroke-width="1.5"/>
+    <path d="M105 180 C105 200, 105 220, 105 240 C105 220, 105 200, 105 180 Z" fill="#f5d442" stroke="#333" stroke-width="1.5"/>
+    
+    <!-- Wings -->
+    <path d="M75 110 C55 90, 35 85, 25 95 C45 105, 65 115, 75 110 Z" fill="#f5d442" stroke="#333" stroke-width="1.5"/>
+    <path d="M135 110 C155 90, 175 85, 185 95 C165 105, 145 115, 135 110 Z" fill="#f5d442" stroke="#333" stroke-width="1.5"/>
+    <path d="M75 130 C55 120, 35 125, 25 135 C45 135, 65 135, 75 130 Z" fill="#f59442" stroke="#333" stroke-width="1.5"/>
+    <path d="M135 130 C155 120, 175 125, 185 135 C165 135, 145 135, 135 130 Z" fill="#f59442" stroke="#333" stroke-width="1.5"/>
+    
+    <!-- Head -->
+    <circle cx="105" cy="70" r="15" fill="#f5d442" stroke="#333" stroke-width="2"/>
+    <path d="M105 60 L105 50 C100 45, 110 45, 105 50 Z" fill="#f54242" stroke="#333" stroke-width="1"/>
+    <circle cx="100" cy="65" r="2" fill="#333"/>
+    <circle cx="110" cy="65" r="2" fill="#333"/>
+    
+    <!-- Decorative elements -->
+    <circle cx="95" cy="100" r="3" fill="#5555ff"/>
+    <circle cx="115" cy="100" r="3" fill="#5555ff"/>
+    <circle cx="95" cy="120" r="3" fill="#5555ff"/>
+    <circle cx="115" cy="120" r="3" fill="#5555ff"/>
+    <circle cx="95" cy="140" r="3" fill="#5555ff"/>
+    <circle cx="115" cy="140" r="3" fill="#5555ff"/>
+    <circle cx="105" cy="110" r="3" fill="#5555ff"/>
+    <circle cx="105" cy="130" r="3" fill="#5555ff"/>
+    <circle cx="105" cy="150" r="3" fill="#5555ff"/>
+  </g>
+</svg>

@@ -13,6 +13,7 @@ class User(UserMixin, db.Model):
     # Relationships
     bank_accounts = db.relationship('BankAccount', backref='user', lazy=True, cascade='all, delete-orphan')
     recommendations = db.relationship('Recommendation', backref='user', lazy=True, cascade='all, delete-orphan')
+    savings_goals = db.relationship('SavingsGoal', backref='user', lazy=True, cascade='all, delete-orphan')
     
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -82,3 +83,51 @@ class Recommendation(db.Model):
     
     def __repr__(self):
         return f'<Recommendation {self.title}>'
+
+class SavingsGoal(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    title = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text, nullable=True)
+    target_amount = db.Column(db.Float, nullable=False)
+    current_amount = db.Column(db.Float, default=0.0)
+    start_date = db.Column(db.DateTime, default=datetime.utcnow)
+    target_date = db.Column(db.DateTime, nullable=True)
+    character_type = db.Column(db.String(50), default='bogatyr')  # Russian knight
+    is_achieved = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    # Helper properties
+    @property
+    def progress_percentage(self):
+        if self.target_amount <= 0:
+            return 100
+        progress = (self.current_amount / self.target_amount) * 100
+        return min(100, max(0, progress))  # Clamp between 0 and 100
+    
+    @property
+    def days_remaining(self):
+        if not self.target_date:
+            return None
+        delta = self.target_date - datetime.utcnow()
+        return max(0, delta.days)
+    
+    @property
+    def is_on_track(self):
+        if not self.target_date or self.target_amount <= 0:
+            return True
+        
+        # Calculate the expected progress based on time elapsed
+        total_days = (self.target_date - self.start_date).days
+        if total_days <= 0:
+            return self.progress_percentage >= 100
+            
+        days_elapsed = (datetime.utcnow() - self.start_date).days
+        expected_progress = (days_elapsed / total_days) * 100
+        
+        # User is on track if their progress is at least 90% of expected
+        return self.progress_percentage >= (expected_progress * 0.9)
+    
+    def __repr__(self):
+        return f'<SavingsGoal {self.title}: {self.current_amount}/{self.target_amount}>'

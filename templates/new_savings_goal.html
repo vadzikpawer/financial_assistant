@@ -1,0 +1,174 @@
+{% extends 'layout.html' %}
+
+{% block title %}Новая цель сбережений{% endblock %}
+
+{% block styles %}
+<style>
+    .character-card {
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+        margin-bottom: 15px;
+    }
+    
+    .character-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .character-card.selected {
+        border-color: #0d6efd;
+        box-shadow: 0 0 10px rgba(13, 110, 253, 0.3);
+    }
+    
+    .character-image {
+        height: 120px;
+        margin: 0 auto;
+        display: block;
+    }
+    
+    .date-input {
+        position: relative;
+    }
+    
+    .date-input i {
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        transform: translateY(-50%);
+        pointer-events: none;
+    }
+    
+    .character-description {
+        font-size: 0.9rem;
+        min-height: 80px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex align-items-center mb-4">
+        <a href="{{ url_for('savings.savings_goals') }}" class="btn btn-outline-secondary me-3">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        <h1 class="display-5 mb-0">Новая цель сбережений</h1>
+    </div>
+    
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('savings.new_savings_goal') }}">
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <h4 class="mb-3">Информация о цели</h4>
+                        
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Название цели</label>
+                            <input type="text" class="form-control" id="title" name="title" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Описание (опционально)</label>
+                            <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="target_amount" class="form-label">Целевая сумма</label>
+                                <div class="input-group">
+                                    <input type="number" step="0.01" min="0" class="form-control" id="target_amount" name="target_amount" required>
+                                    <span class="input-group-text">₽</span>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="current_amount" class="form-label">Текущая сумма</label>
+                                <div class="input-group">
+                                    <input type="number" step="0.01" min="0" class="form-control" id="current_amount" name="current_amount" value="0">
+                                    <span class="input-group-text">₽</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="target_date" class="form-label">Целевая дата (опционально)</label>
+                            <div class="date-input">
+                                <input type="date" class="form-control" id="target_date" name="target_date">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-4">
+                        <h4 class="mb-3">Выберите персонажа</h4>
+                        <p class="text-muted mb-4">Выберите персонажа из русского фольклора, который будет сопровождать вас на пути к цели</p>
+                        
+                        <div class="row">
+                            {% for char_id, character in characters.items() %}
+                            <div class="col-md-6">
+                                <div class="card character-card" data-character="{{ char_id }}">
+                                    <div class="card-body text-center">
+                                        <img src="{{ url_for('static', filename='img/' + character.image) }}" alt="{{ character.name }}" class="character-image mb-3">
+                                        <h5 class="card-title">{{ character.name }}</h5>
+                                        <p class="card-text character-description">{{ character.description }}</p>
+                                        <div class="form-check">
+                                            <input class="form-check-input character-radio" type="radio" name="character_type" 
+                                                id="character_{{ char_id }}" value="{{ char_id }}" 
+                                                {% if char_id == 'bogatyr' %}checked{% endif %}>
+                                            <label class="form-check-label" for="character_{{ char_id }}">
+                                                Выбрать
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-4 d-flex justify-content-between">
+                    <a href="{{ url_for('savings.savings_goals') }}" class="btn btn-secondary">Отмена</a>
+                    <button type="submit" class="btn btn-primary">Создать цель</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handle character card selection
+        const characterCards = document.querySelectorAll('.character-card');
+        
+        characterCards.forEach(card => {
+            card.addEventListener('click', function() {
+                // Get character ID
+                const charId = this.getAttribute('data-character');
+                
+                // Uncheck all radio buttons
+                document.querySelectorAll('.character-radio').forEach(radio => {
+                    radio.checked = false;
+                });
+                
+                // Check the radio button for this character
+                document.getElementById(`character_${charId}`).checked = true;
+                
+                // Remove selected class from all cards
+                characterCards.forEach(c => c.classList.remove('selected'));
+                
+                // Add selected class to this card
+                this.classList.add('selected');
+            });
+            
+            // Check if this card's radio is already checked (for default)
+            const charId = card.getAttribute('data-character');
+            const radio = document.getElementById(`character_${charId}`);
+            if (radio.checked) {
+                card.classList.add('selected');
+            }
+        });
+    });
+</script>
+{% endblock %}

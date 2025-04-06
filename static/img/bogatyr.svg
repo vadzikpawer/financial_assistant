@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 210 297" width="150" height="150">
+  <!-- Bogatyr (Russian Knight) -->
+  <g>
+    <!-- Helmet -->
+    <path d="M105 50 C85 55, 70 65, 65 85 C60 105, 65 125, 65 140 L145 140 C145 125, 150 105, 145 85 C140 65, 125 55, 105 50 Z" fill="#7d7d7d" stroke="#333" stroke-width="2"/>
+    <path d="M76 110 L76 140 M100 100 L100 140 M124 110 L124 140" stroke="#555" stroke-width="2"/>
+    
+    <!-- Face -->
+    <circle cx="105" cy="105" r="15" fill="#ffe0b2"/>
+    <path d="M100 100 Q105 105, 110 100" stroke="#333" stroke-width="1.5" fill="none"/>
+    <circle cx="100" cy="95" r="2" fill="#333"/>
+    <circle cx="110" cy="95" r="2" fill="#333"/>
+    
+    <!-- Chainmail -->
+    <path d="M65 140 C65 160, 85 180, 105 180 C125 180, 145 160, 145 140 Z" fill="#555" stroke="#333" stroke-width="2"/>
+    <path d="M85 145 L85 175 M105 145 L105 175 M125 145 L125 175" stroke="#444" stroke-width="2"/>
+    
+    <!-- Shoulders -->
+    <rect x="65" y="140" width="20" height="25" rx="5" fill="#cc3333" stroke="#333" stroke-width="2"/>
+    <rect x="125" y="140" width="20" height="25" rx="5" fill="#cc3333" stroke="#333" stroke-width="2"/>
+    
+    <!-- Shield -->
+    <path d="M60 175 C60 200, 60 220, 85 235 C85 225, 85 200, 85 175 Z" fill="#cc3333" stroke="#333" stroke-width="2"/>
+    <circle cx="72.5" cy="205" r="8" fill="#f5d452" stroke="#333" stroke-width="1"/>
+    
+    <!-- Sword -->
+    <rect x="125" y="175" width="5" height="50" fill="#7d7d7d" stroke="#333" stroke-width="1"/>
+    <rect x="120" y="175" width="15" height="5" fill="#7d7d7d" stroke="#333" stroke-width="1"/>
+    <rect x="122.5" y="160" width="10" height="15" rx="2" fill="#655533" stroke="#333" stroke-width="1"/>
+  </g>
+</svg>

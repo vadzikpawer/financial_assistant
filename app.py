@@ -53,7 +53,7 @@ def format_number(value):
 
 with app.app_context():
     # Import models
-    from models import User, BankAccount, Transaction, Category, Recommendation
+    from models import User, BankAccount, Transaction, Category, Recommendation, SavingsGoal
     
     # Create database tables
     db.create_all()
@@ -67,11 +67,13 @@ with app.app_context():
     from routers.dashboard import dashboard_bp
     from routers.transactions import transactions_bp
     from routers.banks import banks_bp
+    from routers.savings import savings_bp
     
     app.register_blueprint(auth_bp)
     app.register_blueprint(dashboard_bp)
     app.register_blueprint(transactions_bp)
     app.register_blueprint(banks_bp)
+    app.register_blueprint(savings_bp)
     
     # User loader for flask_login
     @login_manager.user_loader

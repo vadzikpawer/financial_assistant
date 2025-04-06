@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, flash
 from flask_login import login_required, current_user
-from models import BankAccount, Transaction, Recommendation, Category
+from models import BankAccount, Transaction, Recommendation, Category, SavingsGoal
 from sqlalchemy import func
 from app import db
 from datetime import datetime, timedelta
@@ -26,6 +26,9 @@ def dashboard():
     
     # Get recommendations
     recommendations = Recommendation.query.filter_by(user_id=current_user.id).order_by(Recommendation.created_at.desc()).limit(3).all()
+    
+    # Get savings goals
+    savings_goals = SavingsGoal.query.filter_by(user_id=current_user.id).order_by(SavingsGoal.created_at.desc()).limit(3).all()
     
     # Get monthly spending by category (last 30 days)
     thirty_days_ago = datetime.utcnow() - timedelta(days=30)
@@ -69,6 +72,7 @@ def dashboard():
                            total_balance=total_balance,
                            latest_transactions=latest_transactions,
                            recommendations=recommendations,
+                           savings_goals=savings_goals,
                            category_labels=category_labels,
                            category_values=category_values,
                            daily_labels=daily_labels,

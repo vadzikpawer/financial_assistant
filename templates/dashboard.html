@@ -187,6 +187,54 @@
                     </div>
                 </div>
             </div>
+        <!-- Savings Goals Card -->
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card bg-dark border-0">
+                    <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="mb-0">Цели по сбережениям</h5>
+                        </div>
+                        <a href="{{ url_for("savings.savings_goals") }}" class="btn btn-sm btn-outline-primary">
+                            Управлять целями
+                        </a>
+                    </div>
+                    <div class="card-body">
+                        {% if savings_goals %}
+                        <div class="row">
+                            {% for goal in savings_goals %}
+                            <div class="col-md-4 mb-3">
+                                <div class="card bg-dark h-100 border-start {% if goal.is_achieved %}border-success{% elif not goal.is_on_track %}border-danger{% else %}border-primary{% endif %}" style="border-width: 0 0 0 4px;">
+                                    <div class="card-body">
+                                        <h6 class="card-title">{{ goal.title }}</h6>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>{{ goal.current_amount|round|int|format_number }} ₽</span>
+                                            <span>{{ goal.target_amount|round|int|format_number }} ₽</span>
+                                        </div>
+                                        <div class="progress mb-2">
+                                            <div class="progress-bar {% if goal.is_achieved %}bg-success{% elif not goal.is_on_track %}bg-danger{% else %}bg-primary{% endif %}" role="progressbar" style="width: {{ goal.progress_percentage }}%" aria-valuenow="{{ goal.progress_percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                        <div class="text-end">
+                                            <a href="{{ url_for("savings.view_savings_goal", goal_id=goal.id) }}" class="btn btn-sm btn-outline-secondary">Подробнее</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-piggy-bank fa-3x text-muted mb-3"></i>
+                            <p>У вас пока нет целей по сбережениям</p>
+                            <a href="{{ url_for("savings.new_savings_goal") }}" class="btn btn-primary">
+                                <i class="fas fa-plus-circle me-1"></i> Создать цель
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
         </div>
         {% endif %}
     </div>

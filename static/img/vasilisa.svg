@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 210 297" width="150" height="150">
+  <!-- Vasilisa (Beautiful maiden from Russian folklore) -->
+  <g>
+    <!-- Dress -->
+    <path d="M105 90 C85 100, 70 120, 65 150 C62 175, 60 200, 70 230 C80 240, 95 245, 105 245 C115 245, 130 240, 140 230 C150 200, 148 175, 145 150 C140 120, 125 100, 105 90 Z" fill="#5599ff" stroke="#333" stroke-width="2"/>
+    
+    <!-- Decorative patterns -->
+    <path d="M75 150 L135 150 M70 180 L140 180 M75 210 L135 210" stroke="#f5d442" stroke-width="3"/>
+    <circle cx="105" cy="165" r="10" fill="#ffffff" stroke="#f5d442" stroke-width="2"/>
+    <circle cx="105" cy="195" r="10" fill="#ffffff" stroke="#f5d442" stroke-width="2"/>
+    <circle cx="85" cy="165" r="5" fill="#ffffff" stroke="#f5d442" stroke-width="1.5"/>
+    <circle cx="125" cy="165" r="5" fill="#ffffff" stroke="#f5d442" stroke-width="1.5"/>
+    <circle cx="85" cy="195" r="5" fill="#ffffff" stroke="#f5d442" stroke-width="1.5"/>
+    <circle cx="125" cy="195" r="5" fill="#ffffff" stroke="#f5d442" stroke-width="1.5"/>
+    
+    <!-- Head -->
+    <circle cx="105" cy="75" r="15" fill="#ffe0b2" stroke="#333" stroke-width="1.5"/>
+    
+    <!-- Hair -->
+    <path d="M105 60 C90 60, 85 70, 85 75 C85 80, 90 87, 90 90 C83 85, 75 80, 70 85 C75 90, 80 95, 85 95 C85 100, 95 105, 105 105 C115 105, 125 100, 125 95 C130 95, 135 90, 140 85 C135 80, 127 85, 120 90 C120 87, 125 80, 125 75 C125 70, 120 60, 105 60 Z" fill="#a0522d" stroke="#333" stroke-width="1"/>
+    
+    <!-- Face -->
+    <circle cx="98" cy="72" r="2" fill="#333"/>
+    <circle cx="112" cy="72" r="2" fill="#333"/>
+    <path d="M100 80 Q105 83, 110 80" stroke="#333" stroke-width="1.5" fill="none"/>
+    <path d="M100 68 Q105 64, 110 68" stroke="#333" stroke-width="1"/>
+    
+    <!-- Headpiece -->
+    <path d="M90 60 L90 55 L120 55 L120 60" fill="#f5d442" stroke="#333" stroke-width="1.5"/>
+    <circle cx="105" cy="55" r="3" fill="#ff5555" stroke="#333" stroke-width="0.5"/>
+    <circle cx="95" cy="55" r="2" fill="#5555ff" stroke="#333" stroke-width="0.5"/>
+    <circle cx="115" cy="55" r="2" fill="#5555ff" stroke="#333" stroke-width="0.5"/>
+    
+    <!-- Arms -->
+    <path d="M75 120 C65 125, 55 130, 45 145 C50 145, 60 145, 65 140" fill="#ffe0b2" stroke="#333" stroke-width="1.5"/>
+    <path d="M135 120 C145 125, 155 130, 165 145 C160 145, 150 145, 145 140" fill="#ffe0b2" stroke="#333" stroke-width="1.5"/>
+    
+    <!-- Magic doll -->
+    <circle cx="45" cy="145" r="5" fill="#ffccaa" stroke="#333" stroke-width="1"/>
+    <path d="M45 145 C40 145, 40 155, 45 155 C50 155, 50 145, 45 145 Z" fill="#ff9999" stroke="#333" stroke-width="1"/>
+  </g>
+</svg>

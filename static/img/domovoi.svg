@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 210 297" width="150" height="150">
+  <!-- Domovoi (House spirit) -->
+  <g>
+    <!-- Body -->
+    <path d="M105 100 C85 110, 70 125, 65 150 C60 175, 65 200, 75 220 C85 235, 95 240, 105 240 C115 240, 125 235, 135 220 C145 200, 150 175, 145 150 C140 125, 125 110, 105 100 Z" fill="#664422" stroke="#333" stroke-width="2"/>
+    
+    <!-- Belt -->
+    <path d="M65 160 C75 175, 95 175, 105 175 C115 175, 135 175, 145 160" fill="none" stroke="#aa3333" stroke-width="4"/>
+    
+    <!-- Head -->
+    <circle cx="105" cy="75" r="18" fill="#ffddcc" stroke="#333" stroke-width="1.5"/>
+    
+    <!-- Beard -->
+    <path d="M105 85 C90 85, 80 95, 75 115 C80 105, 90 95, 105 95 C120 95, 130 105, 135 115 C130 95, 120 85, 105 85 Z" fill="#aaaaaa" stroke="#333" stroke-width="1"/>
+    
+    <!-- Hair -->
+    <path d="M105 55 C90 55, 80 65, 80 75 C80 80, 85 85, 90 85 C90 67, 95 60, 105 60 C115 60, 120 67, 120 85 C125 85, 130 80, 130 75 C130 65, 120 55, 105 55 Z" fill="#aaaaaa" stroke="#333" stroke-width="1"/>
+    
+    <!-- Face -->
+    <circle cx="98" cy="70" r="2" fill="#333"/>
+    <circle cx="112" cy="70" r="2" fill="#333"/>
+    <path d="M98 80 Q105 85, 112 80" stroke="#333" stroke-width="1.5" fill="none"/>
+    <path d="M95 68 L100 65 M110 65 L115 68" stroke="#333" stroke-width="1"/>
+    
+    <!-- Hat -->
+    <path d="M85 55 C85 45, 95 35, 105 35 C115 35, 125 45, 125 55 Z" fill="#aa5533" stroke="#333" stroke-width="1.5"/>
+    
+    <!-- Hands -->
+    <path d="M70 150 C60 145, 50 140, 40 145 C45 150, 50 155, 60 155" fill="#ffddcc" stroke="#333" stroke-width="1.5"/>
+    <path d="M140 150 C150 145, 160 140, 170 145 C165 150, 160 155, 150 155" fill="#ffddcc" stroke="#333" stroke-width="1.5"/>
+    
+    <!-- Coins -->
+    <circle cx="45" cy="155" r="5" fill="#f5d442" stroke="#333" stroke-width="0.5"/>
+    <circle cx="55" cy="150" r="5" fill="#f5d442" stroke="#333" stroke-width="0.5"/>
+    <circle cx="155" cy="150" r="5" fill="#f5d442" stroke="#333" stroke-width="0.5"/>
+    <circle cx="165" cy="155" r="5" fill="#f5d442" stroke="#333" stroke-width="0.5"/>
+    
+    <!-- Coin details -->
+    <path d="M43 153 L47 157 M43 157 L47 153" stroke="#333" stroke-width="0.5"/>
+    <path d="M53 148 L57 152 M53 152 L57 148" stroke="#333" stroke-width="0.5"/>
+    <path d="M153 148 L157 152 M153 152 L157 148" stroke="#333" stroke-width="0.5"/>
+    <path d="M163 153 L167 157 M163 157 L167 153" stroke="#333" stroke-width="0.5"/>
+  </g>
+</svg>
