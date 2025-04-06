@@ -65,7 +65,8 @@
         <div class="card bg-dark border-0">
             <div class="card-body p-0">
                 {% if transactions %}
-                <div class="table-responsive">
+                <!-- Desktop View (hidden on small screens) -->
+                <div class="table-responsive d-none d-md-block">
                     <table class="table table-hover table-dark mb-0">
                         <thead>
                             <tr>
@@ -152,6 +153,51 @@
                             {% endfor %}
                         </tbody>
                     </table>
+                </div>
+                
+                <!-- Mobile View (visible only on small screens) -->
+                <div class="d-md-none">
+                    <ul class="list-group list-group-flush">
+                        {% for transaction in transactions %}
+                        <li class="list-group-item bg-dark border-secondary">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div class="text-nowrap me-2">{{ transaction.transaction_date.strftime('%d.%m.%Y') }}</div>
+                                <div class="ms-auto text-nowrap">
+                                    <span class="{{ 'text-danger' if transaction.is_expense else 'text-success' }} fs-5">
+                                        {{ transaction.amount|round|int|format_number }} {{ transaction.currency }}
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-2">
+                                <div>{{ transaction.description }}</div>
+                                {% if transaction.merchant %}
+                                <small class="text-muted">{{ transaction.merchant }}</small>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    {% if transaction.category %}
+                                    <span class="badge bg-secondary">
+                                        {% if transaction.category.icon %}
+                                        <i class="fas fa-{{ transaction.category.icon }} me-1"></i>
+                                        {% endif %}
+                                        {{ transaction.category.name }}
+                                    </span>
+                                    {% else %}
+                                    <span class="badge bg-dark">Не категоризировано</span>
+                                    {% endif %}
+                                </div>
+                                <button type="button" class="btn btn-sm btn-outline-secondary" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#categoryModal{{ transaction.id }}">
+                                    <i class="fas fa-edit"></i> Категория
+                                </button>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
                 </div>
                 {% else %}
                 <div class="text-center py-5">
