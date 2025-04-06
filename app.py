@@ -5,9 +5,16 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
 from werkzeug.middleware.proxy_fix import ProxyFix
 from flask_login import LoginManager
+import locale
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
+
+# Set locale for number formatting
+try:
+    locale.setlocale(locale.LC_ALL, 'ru_RU.UTF-8')
+except:
+    locale.setlocale(locale.LC_ALL, '')
 
 class Base(DeclarativeBase):
     pass
@@ -34,6 +41,15 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'auth.login'
 login_manager.login_message_category = 'info'
+
+# Add Jinja2 format_number filter
+@app.template_filter('format_number')
+def format_number(value):
+    """Format a number with thousands separator"""
+    try:
+        return locale.format_string("%d", int(value), grouping=True)
+    except (ValueError, TypeError):
+        return value
 
 with app.app_context():
     # Import models
