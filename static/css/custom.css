@@ -257,3 +257,33 @@ body {
         height: 100px;
     }
 }
+
+/* Font styling - Play for headings, Roboto for body */
+h1, h2, h3, h4, h5, h6, 
+.md-app-bar-title,
+.md-drawer-header h3,
+.md-display-1,
+.md-display-2,
+.md-headline,
+.md-title,
+.md-btn {
+    font-family: 'Play', 'Roboto', sans-serif;
+    font-weight: 700;
+}
+
+.md-card-title,
+.navbar-brand,
+.md-overline {
+    font-family: 'Play', 'Roboto', sans-serif;
+}
+
+p, div, span, a, input, textarea, select, button,
+.md-body,
+.md-caption,
+.md-subtitle {
+    font-family: 'Roboto', sans-serif;
+}
+
+.md-app-bar-title {
+    letter-spacing: 0.5px;
+}
