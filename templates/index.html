@@ -3,145 +3,183 @@
 {% block title %}Главная{% endblock %}
 
 {% block content %}
-<div class="row align-items-center py-5">
+<!-- Hero Section -->
+<div class="row align-items-center py-4">
     <div class="col-md-6 mb-4 mb-md-0">
-        <h1 class="display-4 fw-bold">Управляйте <span class="text-primary">финансами</span> с умом</h1>
+        <h1 class="md-display-1 mb-3">Управляйте <span style="color: var(--md-primary);">финансами</span> с умом</h1>
         <p class="lead mb-4">
             ФинАссистент — это умный помощник для анализа ваших финансов, который подключается к российским банкам
             и помогает экономить деньги благодаря искусственному интеллекту.
         </p>
         <div class="d-flex gap-3 flex-wrap">
-            <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg px-4">
+            <a href="{{ url_for('auth.register') }}" class="md-btn md-btn-primary md-btn-lg">
                 Начать бесплатно
             </a>
-            <a href="{{ url_for('auth.login') }}" class="btn btn-outline-secondary btn-lg px-4">
+            <a href="{{ url_for('auth.login') }}" class="md-btn md-btn-outline md-btn-lg">
                 Войти
             </a>
-            <button id="install-button" class="btn btn-success btn-lg px-4 d-none btn-vibrate">
+            <button id="install-button" class="md-btn md-btn-secondary md-btn-lg d-none">
                 <i class="fas fa-download me-2"></i> Установить приложение
             </button>
         </div>
     </div>
     <div class="col-md-6 text-center">
         <svg class="img-fluid" width="400" height="300" viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg">
-            <!-- Finance illustration -->
-            <rect x="100" y="50" width="400" height="300" rx="15" fill="#2a3548" />
-            <rect x="130" y="80" width="340" height="60" rx="10" fill="#3a4a61" />
-            <rect x="150" y="100" width="150" height="20" rx="5" fill="#7ca1d5" />
-            <rect x="310" y="100" width="80" height="20" rx="5" fill="#6c8fc5" />
-            <circle cx="420" cy="110" r="15" fill="#7ca1d5" />
-            <rect x="130" y="160" width="160" height="160" rx="10" fill="#3a4a61" />
-            <path d="M150 220 L270 220 M150 240 L270 240 M150 260 L270 260 M150 280 L230 280" stroke="#516b8f" stroke-width="5" />
-            <rect x="150" y="180" width="100" height="20" rx="5" fill="#7ca1d5" />
-            <rect x="310" y="160" width="160" height="70" rx="10" fill="#3a4a61" />
-            <path d="M330 190 L335 185 L345 205 L360 165 L375 195 L390 175 L405 185 L420 170 L435 180 L450 160" stroke="#7ca1d5" stroke-width="3" fill="none" />
-            <rect x="310" y="250" width="160" height="70" rx="10" fill="#3a4a61" />
-            <circle cx="340" cy="285" r="20" fill="#7ba4db" />
-            <circle cx="390" cy="285" r="20" fill="#6c8fc5" />
-            <circle cx="440" cy="285" r="20" fill="#5778ae" />
+            <!-- Finance illustration with more material design style -->
+            <!-- Background shape -->
+            <rect x="100" y="50" width="400" height="300" rx="20" fill="#2d2d2d" />
+            
+            <!-- Header area -->
+            <rect x="130" y="80" width="340" height="70" rx="12" fill="#3a3a3a" />
+            <rect x="150" y="100" width="150" height="20" rx="8" fill="#ffdd2d" />
+            <rect x="310" y="100" width="80" height="20" rx="8" fill="#428bf9" />
+            <circle cx="420" cy="110" r="15" fill="#ffdd2d" />
+            
+            <!-- Left panel -->
+            <rect x="130" y="170" width="160" height="160" rx="12" fill="#3a3a3a" />
+            <path d="M150 220 L270 220 M150 240 L270 240 M150 260 L270 260 M150 280 L230 280" stroke="#555" stroke-width="5" />
+            <rect x="150" y="180" width="100" height="20" rx="8" fill="#24c38e" />
+            
+            <!-- Top right panel -->
+            <rect x="310" y="170" width="160" height="70" rx="12" fill="#3a3a3a" />
+            <path d="M330 190 L335 185 L345 205 L360 165 L375 195 L390 175 L405 185 L420 170 L435 180 L450 160" stroke="#428bf9" stroke-width="3" fill="none" />
+            
+            <!-- Bottom right panel -->
+            <rect x="310" y="260" width="160" height="70" rx="12" fill="#3a3a3a" />
+            <circle cx="340" cy="295" r="20" fill="#ffdd2d" />
+            <circle cx="390" cy="295" r="20" fill="#428bf9" />
+            <circle cx="440" cy="295" r="20" fill="#24c38e" />
         </svg>
     </div>
 </div>
 
-<hr class="my-5">
+<div class="md-divider my-5"></div>
 
+<!-- Features Section -->
 <div class="row text-center py-4">
     <h2 class="mb-5">Почему ФинАссистент?</h2>
     
     <div class="col-md-4 mb-4">
-        <div class="card h-100 border-0 bg-dark card-hover">
-            <div class="card-body p-4">
+        <div class="md-card md-card-hover h-100">
+            <div class="md-card-body p-4">
                 <div class="mb-3">
-                    <i class="fas fa-university fa-3x text-primary"></i>
+                    <div style="width: 70px; height: 70px; border-radius: 50%; background-color: var(--md-primary); display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+                        <i class="fas fa-university fa-2x" style="color: var(--md-on-primary);"></i>
+                    </div>
                 </div>
-                <h3 class="card-title h5">Подключение к банкам</h3>
+                <h4 class="card-title">Подключение к банкам</h4>
                 <p class="card-text">Безопасно подключитесь к вашим счетам в российских банках и отслеживайте все транзакции в одном месте.</p>
             </div>
         </div>
     </div>
     
     <div class="col-md-4 mb-4">
-        <div class="card h-100 border-0 bg-dark card-hover">
-            <div class="card-body p-4">
+        <div class="md-card md-card-hover h-100">
+            <div class="md-card-body p-4">
                 <div class="mb-3">
-                    <i class="fas fa-brain fa-3x text-primary"></i>
+                    <div style="width: 70px; height: 70px; border-radius: 50%; background-color: var(--md-secondary); display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+                        <i class="fas fa-brain fa-2x" style="color: var(--md-on-secondary);"></i>
+                    </div>
                 </div>
-                <h3 class="card-title h5">ИИ-аналитика</h3>
+                <h4 class="card-title">ИИ-аналитика</h4>
                 <p class="card-text">Наши алгоритмы искусственного интеллекта анализируют ваши расходы и находят способы оптимизации бюджета.</p>
             </div>
         </div>
     </div>
     
     <div class="col-md-4 mb-4">
-        <div class="card h-100 border-0 bg-dark card-hover">
-            <div class="card-body p-4">
+        <div class="md-card md-card-hover h-100">
+            <div class="md-card-body p-4">
                 <div class="mb-3">
-                    <i class="fas fa-piggy-bank fa-3x text-primary"></i>
+                    <div style="width: 70px; height: 70px; border-radius: 50%; background-color: var(--md-success); display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+                        <i class="fas fa-piggy-bank fa-2x" style="color: white;"></i>
+                    </div>
                 </div>
-                <h3 class="card-title h5">Умная экономия</h3>
+                <h4 class="card-title">Умная экономия</h4>
                 <p class="card-text">Получайте персонализированные рекомендации, которые помогут вам экономить деньги каждый месяц.</p>
             </div>
         </div>
     </div>
 </div>
 
-<hr class="my-5">
+<div class="md-divider my-5"></div>
 
+<!-- Banks Section -->
 <div class="row py-4 align-items-center">
     <div class="col-md-6 mb-4 mb-md-0">
-        <h2>Поддерживаемые банки</h2>
-        <p class="lead">ФинАссистент работает с крупнейшими российскими банками, позволяя вам получить полную картину ваших финансов.</p>
+        <h2 class="mb-3">Поддерживаемые банки</h2>
+        <p class="lead mb-4">ФинАссистент работает с крупнейшими российскими банками, позволяя вам получить полную картину ваших финансов.</p>
         <div class="d-flex flex-wrap gap-3 mt-4">
-            <div class="p-3 bg-dark rounded d-flex align-items-center">
-                <i class="fas fa-credit-card me-2 text-primary"></i>
+            <div class="md-chip">
+                <i class="fas fa-credit-card md-chip-icon"></i>
                 <span>Тинькофф Банк</span>
             </div>
-            <div class="p-3 bg-dark rounded d-flex align-items-center">
-                <i class="fas fa-credit-card me-2 text-primary"></i>
+            <div class="md-chip">
+                <i class="fas fa-credit-card md-chip-icon"></i>
                 <span>Сбербанк</span>
             </div>
-            <div class="p-3 bg-dark rounded d-flex align-items-center">
-                <i class="fas fa-credit-card me-2 text-primary"></i>
+            <div class="md-chip">
+                <i class="fas fa-credit-card md-chip-icon"></i>
                 <span>ВТБ</span>
             </div>
-            <div class="p-3 bg-dark rounded d-flex align-items-center">
-                <i class="fas fa-credit-card me-2 text-primary"></i>
+            <div class="md-chip">
+                <i class="fas fa-credit-card md-chip-icon"></i>
                 <span>Альфа-Банк</span>
             </div>
-            <div class="p-3 bg-dark rounded d-flex align-items-center">
-                <i class="fas fa-credit-card me-2 text-primary"></i>
+            <div class="md-chip">
+                <i class="fas fa-credit-card md-chip-icon"></i>
                 <span>Газпромбанк</span>
             </div>
         </div>
     </div>
     <div class="col-md-6">
-        <div class="card bg-dark border-0">
-            <div class="card-body p-4">
-                <h3 class="card-title mb-3">Как это работает</h3>
-                <ul class="list-group list-group-flush border-0">
-                    <li class="list-group-item bg-transparent text-light border-secondary">
-                        <i class="fas fa-check-circle text-success me-2"></i>
-                        Зарегистрируйтесь и создайте аккаунт
-                    </li>
-                    <li class="list-group-item bg-transparent text-light border-secondary">
-                        <i class="fas fa-check-circle text-success me-2"></i>
-                        Подключите свои банковские счета через защищенный протокол
-                    </li>
-                    <li class="list-group-item bg-transparent text-light border-secondary">
-                        <i class="fas fa-check-circle text-success me-2"></i>
-                        Получите автоматический анализ ваших расходов и доходов
-                    </li>
-                    <li class="list-group-item bg-transparent text-light border-secondary">
-                        <i class="fas fa-check-circle text-success me-2"></i>
-                        Используйте умные рекомендации по экономии денег
-                    </li>
-                    <li class="list-group-item bg-transparent text-light border-secondary">
-                        <i class="fas fa-check-circle text-success me-2"></i>
-                        Отслеживайте свой прогресс с помощью наглядных графиков
-                    </li>
-                </ul>
+        <div class="md-card">
+            <div class="md-card-body p-4">
+                <h3 class="mb-3">Как это работает</h3>
+                <div class="md-list">
+                    <div class="md-list-item">
+                        <div class="md-list-item-icon">
+                            <i class="fas fa-check-circle" style="color: var(--md-success);"></i>
+                        </div>
+                        <div class="md-list-item-content">
+                            <div class="md-list-item-title">Зарегистрируйтесь и создайте аккаунт</div>
+                        </div>
+                    </div>
+                    <div class="md-list-item">
+                        <div class="md-list-item-icon">
+                            <i class="fas fa-check-circle" style="color: var(--md-success);"></i>
+                        </div>
+                        <div class="md-list-item-content">
+                            <div class="md-list-item-title">Подключите свои банковские счета через защищенный протокол</div>
+                        </div>
+                    </div>
+                    <div class="md-list-item">
+                        <div class="md-list-item-icon">
+                            <i class="fas fa-check-circle" style="color: var(--md-success);"></i>
+                        </div>
+                        <div class="md-list-item-content">
+                            <div class="md-list-item-title">Получите автоматический анализ ваших расходов и доходов</div>
+                        </div>
+                    </div>
+                    <div class="md-list-item">
+                        <div class="md-list-item-icon">
+                            <i class="fas fa-check-circle" style="color: var(--md-success);"></i>
+                        </div>
+                        <div class="md-list-item-content">
+                            <div class="md-list-item-title">Используйте умные рекомендации по экономии денег</div>
+                        </div>
+                    </div>
+                    <div class="md-list-item">
+                        <div class="md-list-item-icon">
+                            <i class="fas fa-check-circle" style="color: var(--md-success);"></i>
+                        </div>
+                        <div class="md-list-item-content">
+                            <div class="md-list-item-title">Отслеживайте свой прогресс с помощью наглядных графиков</div>
+                        </div>
+                    </div>
+                </div>
                 <div class="mt-4">
-                    <a href="{{ url_for('auth.register') }}" class="btn btn-primary">Начать сейчас</a>
+                    <a href="{{ url_for('auth.register') }}" class="md-btn md-btn-primary">Начать сейчас</a>
                 </div>
             </div>
         </div>
@@ -151,29 +189,30 @@
 <!-- PWA Installation Card - Only visible on mobile -->
 <div class="row my-5 d-md-none">
     <div class="col-12">
-        <div class="card bg-primary text-white border-0">
-            <div class="card-body p-4 text-center">
-                <h3 class="card-title">Установите мобильное приложение</h3>
-                <p class="card-text">Получите доступ к ФинАссистенту с вашего домашнего экрана, с полной поддержкой офлайн-режима и push-уведомлениями.</p>
-                <button id="install-button-mobile" class="btn btn-light btn-lg px-4 mt-2 btn-vibrate">
+        <div class="md-card" style="background-color: var(--md-primary);">
+            <div class="md-card-body p-4 text-center">
+                <h3 style="color: var(--md-on-primary);">Установите мобильное приложение</h3>
+                <p style="color: var(--md-on-primary);">Получите доступ к ФинАссистенту с вашего домашнего экрана, с полной поддержкой офлайн-режима и push-уведомлениями.</p>
+                <button id="install-button-mobile" class="md-btn md-btn-lg" style="background-color: var(--md-on-primary); color: var(--md-primary);">
                     <i class="fas fa-download me-2"></i> Установить
                 </button>
-                <p class="mt-3 small">Работает на Android и iOS через Chrome, Safari и другие современные браузеры.</p>
+                <p class="mt-3 small" style="color: var(--md-on-primary);">Работает на Android и iOS через Chrome, Safari и другие современные браузеры.</p>
             </div>
         </div>
     </div>
 </div>
 
-<hr class="my-5">
+<div class="md-divider my-5"></div>
 
+<!-- CTA Section -->
 <div class="row text-center py-4">
     <h2 class="mb-4">Готовы взять контроль над своими финансами?</h2>
     <p class="lead mb-4">Зарегистрируйтесь бесплатно и начните экономить уже сегодня.</p>
     <div class="d-flex justify-content-center gap-3 flex-wrap">
-        <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg px-4 btn-vibrate">
+        <a href="{{ url_for('auth.register') }}" class="md-btn md-btn-primary md-btn-lg">
             Создать аккаунт
         </a>
-        <a href="#" class="btn btn-outline-secondary btn-lg px-4">
+        <a href="#" class="md-btn md-btn-outline md-btn-lg">
             Узнать больше
         </a>
     </div>

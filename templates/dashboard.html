@@ -8,44 +8,46 @@
         <h1 class="mb-4">Дашборд</h1>
         
         {% if not accounts %}
-        <div class="alert alert-info" role="alert">
-            <h4 class="alert-heading">Добро пожаловать в ФинАссистент!</h4>
-            <p>Для начала работы подключите ваши банковские счета.</p>
-            <hr>
-            <p class="mb-0">
-                <a href="{{ url_for('banks.connect_bank') }}" class="btn btn-primary btn-vibrate">
-                    <i class="fas fa-plus-circle me-1"></i> Подключить банк
-                </a>
-            </p>
+        <div class="md-card p-4 text-center">
+            <div class="mb-4">
+                <i class="fas fa-university fa-4x text-muted"></i>
+            </div>
+            <h4 class="mb-3">Добро пожаловать в ФинАссистент!</h4>
+            <p class="mb-4">Для начала работы подключите ваши банковские счета.</p>
+            <a href="{{ url_for('banks.connect_bank') }}" class="md-btn md-btn-primary">
+                <i class="fas fa-plus-circle me-2"></i> Подключить банк
+            </a>
         </div>
         {% else %}
         
-        <!-- Balance Overview -->
+        <!-- Balance Overview Cards -->
         <div class="row mb-4">
             <div class="col-md-4 mb-3 mb-md-0">
-                <div class="card bg-dark border-0 h-100">
-                    <div class="card-body">
-                        <h5 class="card-title text-muted mb-3">Общий баланс</h5>
-                        <h2 class="display-5 mb-0">{{ total_balance|round|int|format_number }} ₽</h2>
-                        <p class="text-muted mt-2">По всем счетам</p>
+                <div class="md-card h-100">
+                    <div class="md-card-body">
+                        <div class="md-overline mb-1">Общий баланс</div>
+                        <h2 class="md-display-1 mb-0">{{ total_balance|round|int|format_number }} ₽</h2>
+                        <p class="md-caption mt-2">По всем счетам</p>
                     </div>
                 </div>
             </div>
             
             <div class="col-md-8">
-                <div class="card bg-dark border-0 h-100">
-                    <div class="card-body">
-                        <h5 class="card-title text-muted mb-3">Счета</h5>
+                <div class="md-card h-100">
+                    <div class="md-card-body">
+                        <div class="md-overline mb-3">Счета</div>
                         <div class="row">
                             {% for account in accounts %}
                             <div class="col-md-6 col-sm-6 mb-3">
                                 <div class="d-flex align-items-center">
                                     <div class="me-3">
-                                        <i class="fas fa-university fa-2x text-primary"></i>
+                                        <div style="width: 40px; height: 40px; border-radius: 50%; background-color: var(--md-primary); display: flex; align-items: center; justify-content: center;">
+                                            <i class="fas fa-university" style="color: var(--md-on-primary);"></i>
+                                        </div>
                                     </div>
                                     <div>
                                         <h6 class="mb-0">{{ account.bank_name }}</h6>
-                                        <p class="small text-muted mb-0">{{ account.account_type }}</p>
+                                        <p class="md-caption mb-0">{{ account.account_type }}</p>
                                         <p class="mb-0 fw-bold">{{ account.balance|round|int|format_number }} {{ account.currency }}</p>
                                     </div>
                                 </div>
@@ -60,12 +62,12 @@
         <!-- Charts Row -->
         <div class="row mb-4">
             <div class="col-lg-6 mb-4 mb-lg-0">
-                <div class="card bg-dark border-0 h-100">
-                    <div class="card-header bg-transparent border-0">
-                        <h5 class="mb-0">Расходы по категориям</h5>
-                        <p class="text-muted small mb-0">За последние 30 дней</p>
+                <div class="md-card h-100">
+                    <div class="md-card-header">
+                        <div class="md-overline">Расходы по категориям</div>
+                        <p class="md-caption mb-0">За последние 30 дней</p>
                     </div>
-                    <div class="card-body">
+                    <div class="md-card-body">
                         {% if category_labels and category_labels|length > 0 %}
                         <div class="chart-container">
                             <canvas id="categoryChart"></canvas>
@@ -81,12 +83,12 @@
             </div>
             
             <div class="col-lg-6">
-                <div class="card bg-dark border-0 h-100">
-                    <div class="card-header bg-transparent border-0">
-                        <h5 class="mb-0">Ежедневные расходы</h5>
-                        <p class="text-muted small mb-0">За последние 7 дней</p>
+                <div class="md-card h-100">
+                    <div class="md-card-header">
+                        <div class="md-overline">Ежедневные расходы</div>
+                        <p class="md-caption mb-0">За последние 7 дней</p>
                     </div>
-                    <div class="card-body">
+                    <div class="md-card-body">
                         {% if daily_labels and daily_labels|length > 0 %}
                         <div class="chart-container">
                             <canvas id="dailyChart"></canvas>
@@ -105,40 +107,38 @@
         <!-- Savings Goals Card -->
         <div class="row mb-4">
             <div class="col-md-12">
-                <div class="card bg-dark border-0">
-                    <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center flex-wrap">
-                        <div class="mb-2 mb-md-0">
-                            <h5 class="mb-0">Цели по сбережениям</h5>
-                        </div>
+                <div class="md-card">
+                    <div class="md-card-header d-flex justify-content-between align-items-center flex-wrap">
+                        <div class="md-overline mb-0">Цели по сбережениям</div>
                         <div>
-                            <a href="{{ url_for('savings.new_savings_goal') }}" class="btn btn-sm btn-primary me-2 mb-1 mb-md-0">
+                            <a href="{{ url_for('savings.new_savings_goal') }}" class="md-btn md-btn-primary md-btn-sm">
                                 <i class="fas fa-plus me-1"></i> Новая цель
                             </a>
-                            <a href="{{ url_for('savings.savings_goals') }}" class="btn btn-sm btn-outline-primary mb-1 mb-md-0">
+                            <a href="{{ url_for('savings.savings_goals') }}" class="md-btn md-btn-outline md-btn-sm ms-2">
                                 Все цели
                             </a>
                         </div>
                     </div>
-                    <div class="card-body">
+                    <div class="md-card-body">
                         {% if savings_goals %}
                         <div class="row">
                             {% for goal in savings_goals %}
                             <div class="col-md-4 col-sm-6 mb-3">
-                                <div class="card bg-dark h-100 card-hover border-start {% if goal.is_achieved %}border-success{% elif not goal.is_on_track %}border-danger{% else %}border-primary{% endif %}" style="border-width: 0 0 0 4px;">
-                                    <div class="card-body">
-                                        <h6 class="card-title">{{ goal.title }}</h6>
+                                <div class="md-card md-card-hover h-100" style="border-left: 4px solid {% if goal.is_achieved %}var(--md-success){% elif not goal.is_on_track %}var(--md-error){% else %}var(--md-primary){% endif %};">
+                                    <div class="md-card-body">
+                                        <h6 class="mb-2">{{ goal.title }}</h6>
                                         <div class="d-flex justify-content-between mb-2">
-                                            <span class="small">{{ goal.current_amount|round|int|format_number }} ₽</span>
-                                            <span class="small">{{ goal.target_amount|round|int|format_number }} ₽</span>
+                                            <span class="md-caption">{{ goal.current_amount|round|int|format_number }} ₽</span>
+                                            <span class="md-caption">{{ goal.target_amount|round|int|format_number }} ₽</span>
                                         </div>
-                                        <div class="progress mb-2" style="height: 8px;">
-                                            <div class="progress-bar {% if goal.is_achieved %}bg-success{% elif not goal.is_on_track %}bg-danger{% else %}bg-primary{% endif %}" role="progressbar" style="width: {{ goal.progress_percentage }}%" aria-valuenow="{{ goal.progress_percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                        <div class="md-progress mb-3">
+                                            <div class="md-progress-bar" style="width: {{ goal.progress_percentage }}%; background-color: {% if goal.is_achieved %}var(--md-success){% elif not goal.is_on_track %}var(--md-error){% else %}var(--md-primary){% endif %};"></div>
                                         </div>
                                         <div class="d-flex align-items-center justify-content-between">
-                                            <span class="badge {% if goal.is_achieved %}bg-success{% elif not goal.is_on_track %}bg-danger{% else %}bg-primary{% endif %}">
+                                            <span class="md-badge {% if goal.is_achieved %}md-badge-success{% elif not goal.is_on_track %}md-badge-error{% else %}md-badge-neutral{% endif %}">
                                                 {{ goal.progress_percentage }}%
                                             </span>
-                                            <a href="{{ url_for('savings.view_savings_goal', goal_id=goal.id) }}" class="btn btn-sm btn-outline-secondary">Подробнее</a>
+                                            <a href="{{ url_for('savings.view_savings_goal', goal_id=goal.id) }}" class="md-btn md-btn-outline md-btn-sm">Подробнее</a>
                                         </div>
                                     </div>
                                 </div>
@@ -149,7 +149,7 @@
                         <div class="text-center py-4">
                             <i class="fas fa-piggy-bank fa-3x text-muted mb-3"></i>
                             <p>У вас пока нет целей по сбережениям</p>
-                            <a href="{{ url_for('savings.new_savings_goal') }}" class="btn btn-primary btn-vibrate">
+                            <a href="{{ url_for('savings.new_savings_goal') }}" class="md-btn md-btn-primary">
                                 <i class="fas fa-plus-circle me-1"></i> Создать цель
                             </a>
                         </div>
@@ -162,41 +162,47 @@
         <!-- Recent Transactions and Recommendations -->
         <div class="row">
             <div class="col-lg-7 mb-4 mb-lg-0">
-                <div class="card bg-dark border-0">
-                    <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center flex-wrap">
-                        <div class="mb-2 mb-md-0">
-                            <h5 class="mb-0">Последние транзакции</h5>
-                        </div>
-                        <a href="{{ url_for('transactions.transactions') }}" class="btn btn-sm btn-outline-primary">
+                <div class="md-card">
+                    <div class="md-card-header d-flex justify-content-between align-items-center flex-wrap">
+                        <div class="md-overline mb-0">Последние транзакции</div>
+                        <a href="{{ url_for('transactions.transactions') }}" class="md-btn md-btn-outline md-btn-sm">
                             Все транзакции
                         </a>
                     </div>
-                    <div class="card-body p-0">
+                    <div class="md-card-body p-0">
                         {% if latest_transactions %}
-                        <div class="table-responsive">
-                            <table class="table table-hover table-dark mb-0">
-                                <tbody>
-                                    {% for transaction in latest_transactions %}
-                                    <tr>
-                                        <td class="text-nowrap d-none d-md-table-cell">
-                                            {{ transaction.transaction_date.strftime('%d.%m.%Y') }}
-                                        </td>
-                                        <td>
-                                            <div>{{ transaction.description }}</div>
-                                            <div class="d-md-none small text-muted">{{ transaction.transaction_date.strftime('%d.%m.%Y') }}</div>
-                                            {% if transaction.merchant %}
-                                            <small class="text-muted">{{ transaction.merchant }}</small>
-                                            {% endif %}
-                                        </td>
-                                        <td class="text-end text-nowrap">
-                                            <span class="{{ 'text-danger' if transaction.is_expense else 'text-success' }}">
+                        <div class="md-list">
+                            {% for transaction in latest_transactions %}
+                            <div class="md-list-item">
+                                <div class="d-flex w-100 align-items-center">
+                                    <div class="me-3">
+                                        <div style="width: 40px; height: 40px; border-radius: 50%; background-color: {{ 'var(--md-error)' if transaction.is_expense else 'var(--md-success)' }}; display: flex; align-items: center; justify-content: center;">
+                                            <i class="fas {{ 'fa-arrow-down' if transaction.is_expense else 'fa-arrow-up' }}" style="color: white;"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1 me-3">
+                                        <div class="d-flex justify-content-between">
+                                            <div class="md-list-item-title">{{ transaction.description }}</div>
+                                            <div class="d-none d-md-block text-end" style="color: {{ 'var(--md-error)' if transaction.is_expense else 'var(--md-success)' }};">
                                                 {{ transaction.amount|round|int|format_number }} {{ transaction.currency }}
-                                            </span>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="md-list-item-subtitle">
+                                                {% if transaction.merchant %}{{ transaction.merchant }}{% else %}&nbsp;{% endif %}
+                                                <span class="d-md-none">{{ transaction.transaction_date.strftime('%d.%m.%Y') }}</span>
+                                            </div>
+                                            <div class="d-md-none text-end" style="color: {{ 'var(--md-error)' if transaction.is_expense else 'var(--md-success)' }};">
+                                                {{ transaction.amount|round|int|format_number }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="d-none d-md-block text-end text-nowrap md-caption">
+                                        {{ transaction.transaction_date.strftime('%d.%m.%Y') }}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
                         </div>
                         {% else %}
                         <div class="text-center py-5">
@@ -209,29 +215,29 @@
             </div>
             
             <div class="col-lg-5">
-                <div class="card bg-dark border-0">
-                    <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center flex-wrap">
-                        <div class="mb-2 mb-md-0">
-                            <h5 class="mb-0">Рекомендации</h5>
-                        </div>
-                        <a href="{{ url_for('banks.recommendations') }}" class="btn btn-sm btn-outline-primary">
+                <div class="md-card">
+                    <div class="md-card-header d-flex justify-content-between align-items-center flex-wrap">
+                        <div class="md-overline mb-0">Рекомендации</div>
+                        <a href="{{ url_for('banks.recommendations') }}" class="md-btn md-btn-outline md-btn-sm">
                             Все рекомендации
                         </a>
                     </div>
-                    <div class="card-body">
+                    <div class="md-card-body p-0">
                         {% if recommendations %}
-                        <div class="list-group list-group-flush border-0">
+                        <div class="md-list">
                             {% for recommendation in recommendations %}
-                            <div class="list-group-item bg-transparent border-bottom border-secondary py-3">
+                            <div class="md-list-item">
                                 <div class="d-flex">
                                     <div class="me-3">
-                                        <i class="fas fa-lightbulb fa-lg text-warning"></i>
+                                        <div style="width: 40px; height: 40px; border-radius: 50%; background-color: var(--md-warning); display: flex; align-items: center; justify-content: center;">
+                                            <i class="fas fa-lightbulb" style="color: var(--md-on-primary);"></i>
+                                        </div>
                                     </div>
                                     <div>
-                                        <h6 class="mb-1">{{ recommendation.title }}</h6>
-                                        <p class="mb-1 small text-truncate-2">{{ recommendation.description.split('\n')[0] }}</p>
+                                        <div class="md-list-item-title">{{ recommendation.title }}</div>
+                                        <p class="md-list-item-subtitle text-truncate-2">{{ recommendation.description.split('\n')[0] }}</p>
                                         {% if recommendation.potential_savings > 0 %}
-                                        <span class="badge bg-success">
+                                        <span class="md-badge md-badge-success">
                                             Экономия до {{ recommendation.potential_savings|round|int|format_number }} ₽
                                         </span>
                                         {% endif %}
@@ -260,74 +266,38 @@
         <!-- Account Balance Skeleton -->
         <div class="row mb-4">
             <div class="col-md-4 mb-3">
-                <div class="card bg-dark border-0">
-                    <div class="card-body">
-                        <div class="skeleton-text w-50"></div>
-                        <div class="skeleton-text w-75" style="height: 2rem;"></div>
-                        <div class="skeleton-text w-25"></div>
+                <div class="md-card">
+                    <div class="md-card-body">
+                        <div class="md-skeleton w-50"></div>
+                        <div class="md-skeleton w-75" style="height: 2rem;"></div>
+                        <div class="md-skeleton w-25"></div>
                     </div>
                 </div>
             </div>
             <div class="col-md-8">
-                <div class="card bg-dark border-0">
-                    <div class="card-body">
-                        <div class="skeleton-text w-25 mb-4"></div>
+                <div class="md-card">
+                    <div class="md-card-body">
+                        <div class="md-skeleton w-25 mb-4"></div>
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <div class="d-flex">
-                                    <div class="me-3 skeleton-circle" style="width: 40px; height: 40px;"></div>
+                                    <div class="me-3 md-skeleton-circle"></div>
                                     <div class="w-100">
-                                        <div class="skeleton-text w-75"></div>
-                                        <div class="skeleton-text w-50"></div>
-                                        <div class="skeleton-text w-25"></div>
+                                        <div class="md-skeleton w-75"></div>
+                                        <div class="md-skeleton w-50"></div>
+                                        <div class="md-skeleton w-25"></div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <div class="d-flex">
-                                    <div class="me-3 skeleton-circle" style="width: 40px; height: 40px;"></div>
+                                    <div class="me-3 md-skeleton-circle"></div>
                                     <div class="w-100">
-                                        <div class="skeleton-text w-75"></div>
-                                        <div class="skeleton-text w-50"></div>
-                                        <div class="skeleton-text w-25"></div>
+                                        <div class="md-skeleton w-75"></div>
+                                        <div class="md-skeleton w-50"></div>
+                                        <div class="md-skeleton w-25"></div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Charts Skeleton -->
-        <div class="row mb-4">
-            <div class="col-md-6 mb-4">
-                <div class="card bg-dark border-0">
-                    <div class="card-header bg-transparent border-0">
-                        <div class="skeleton-text w-50"></div>
-                        <div class="skeleton-text w-25"></div>
-                    </div>
-                    <div class="card-body d-flex justify-content-center align-items-center" style="height: 250px;">
-                        <div class="skeleton-circle" style="width: 200px; height: 200px;"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 mb-4">
-                <div class="card bg-dark border-0">
-                    <div class="card-header bg-transparent border-0">
-                        <div class="skeleton-text w-50"></div>
-                        <div class="skeleton-text w-25"></div>
-                    </div>
-                    <div class="card-body" style="height: 250px;">
-                        <div class="d-flex flex-column justify-content-end h-100">
-                            <div class="d-flex align-items-end" style="height: 200px;">
-                                <div class="skeleton-text mx-1" style="height: 120px; width: 30px;"></div>
-                                <div class="skeleton-text mx-1" style="height: 80px; width: 30px;"></div>
-                                <div class="skeleton-text mx-1" style="height: 150px; width: 30px;"></div>
-                                <div class="skeleton-text mx-1" style="height: 60px; width: 30px;"></div>
-                                <div class="skeleton-text mx-1" style="height: 100px; width: 30px;"></div>
-                                <div class="skeleton-text mx-1" style="height: 70px; width: 30px;"></div>
-                                <div class="skeleton-text mx-1" style="height: 130px; width: 30px;"></div>
                             </div>
                         </div>
                     </div>
@@ -344,32 +314,36 @@
     document.addEventListener('DOMContentLoaded', function() {
         // Only initialize charts if data is available
         {% if category_labels and category_labels|length > 0 %}
-        // Category Chart with responsive configuration
+        // Category Chart with material design colors
         const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+        const categoryColors = [
+            '#428bf9', '#24c38e', '#ffdd2d', '#f52222', '#ffa216',
+            '#7557de', '#16c79a', '#c79816', '#c71651', '#1671c7'
+        ];
         const categoryChart = new Chart(categoryCtx, {
             type: 'doughnut',
             data: {
                 labels: {{ category_labels|tojson }},
                 datasets: [{
                     data: {{ category_values|tojson }},
-                    backgroundColor: [
-                        '#3498db', '#2ecc71', '#9b59b6', '#e74c3c', '#f39c12',
-                        '#1abc9c', '#d35400', '#c0392b', '#16a085', '#7f8c8d'
-                    ],
-                    borderWidth: 1
+                    backgroundColor: categoryColors.slice(0, {{ category_labels|length }}),
+                    borderWidth: 0
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                cutout: '70%',
                 plugins: {
                     legend: {
                         position: window.innerWidth < 768 ? 'bottom' : 'right',
                         labels: {
-                            boxWidth: window.innerWidth < 768 ? 10 : 20,
+                            boxWidth: window.innerWidth < 768 ? 10 : 15,
                             font: {
-                                size: window.innerWidth < 768 ? 10 : 12
-                            }
+                                size: window.innerWidth < 768 ? 10 : 12,
+                                family: 'Roboto'
+                            },
+                            padding: 15
                         }
                     },
                     tooltip: {
@@ -379,7 +353,16 @@
                                        new Intl.NumberFormat('ru-RU').format(context.raw) + ' ₽ (' + 
                                        Math.round(context.parsed) + '%)';
                             }
-                        }
+                        },
+                        backgroundColor: '#242424',
+                        titleFont: {
+                            family: 'Roboto'
+                        },
+                        bodyFont: {
+                            family: 'Roboto'
+                        },
+                        padding: 12,
+                        cornerRadius: 8
                     }
                 }
             }
@@ -388,14 +371,14 @@
         // Update chart legend position on resize
         window.addEventListener('resize', function() {
             categoryChart.options.plugins.legend.position = window.innerWidth < 768 ? 'bottom' : 'right';
-            categoryChart.options.plugins.legend.labels.boxWidth = window.innerWidth < 768 ? 10 : 20;
+            categoryChart.options.plugins.legend.labels.boxWidth = window.innerWidth < 768 ? 10 : 15;
             categoryChart.options.plugins.legend.labels.font.size = window.innerWidth < 768 ? 10 : 12;
             categoryChart.update();
         });
         {% endif %}
 
         {% if daily_labels and daily_labels|length > 0 %}
-        // Daily Chart with responsive design
+        // Daily Chart with material design styling
         const dailyCtx = document.getElementById('dailyChart').getContext('2d');
         const dailyChart = new Chart(dailyCtx, {
             type: 'bar',
@@ -404,9 +387,9 @@
                 datasets: [{
                     label: 'Расходы (₽)',
                     data: {{ daily_values|tojson }},
-                    backgroundColor: '#3498db',
-                    borderColor: '#2980b9',
-                    borderWidth: 1
+                    backgroundColor: '#428bf9',
+                    borderRadius: 4,
+                    borderWidth: 0
                 }]
             },
             options: {
@@ -415,28 +398,50 @@
                 scales: {
                     y: {
                         beginAtZero: true,
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.05)'
+                        },
                         ticks: {
                             callback: function(value) {
                                 return new Intl.NumberFormat('ru-RU').format(value);
+                            },
+                            font: {
+                                family: 'Roboto'
                             }
                         }
                     },
                     x: {
+                        grid: {
+                            display: false
+                        },
                         ticks: {
                             maxRotation: window.innerWidth < 768 ? 45 : 0,
                             font: {
-                                size: window.innerWidth < 768 ? 10 : 12
+                                size: window.innerWidth < 768 ? 10 : 12,
+                                family: 'Roboto'
                             }
                         }
                     }
                 },
                 plugins: {
+                    legend: {
+                        display: false
+                    },
                     tooltip: {
                         callbacks: {
                             label: function(context) {
                                 return 'Расходы: ' + new Intl.NumberFormat('ru-RU').format(context.raw) + ' ₽';
                             }
-                        }
+                        },
+                        backgroundColor: '#242424',
+                        titleFont: {
+                            family: 'Roboto'
+                        },
+                        bodyFont: {
+                            family: 'Roboto'
+                        },
+                        padding: 12,
+                        cornerRadius: 8
                     }
                 }
             }

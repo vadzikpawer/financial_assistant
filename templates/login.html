@@ -5,44 +5,45 @@
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-6 col-lg-5">
-        <div class="card bg-dark border-0 shadow-sm">
-            <div class="card-body p-4">
-                <div class="text-center mb-4">
-                    <i class="fas fa-user-circle fa-3x text-primary mb-3"></i>
-                    <h2 class="card-title">Вход в аккаунт</h2>
-                    <p class="text-muted">Войдите для доступа к вашим финансам</p>
-                </div>
-                
+        <div class="md-card">
+            <div class="md-card-header">
+                <h4 class="mb-0">Вход в аккаунт</h4>
+            </div>
+            <div class="md-card-body">
                 <form method="POST" action="{{ url_for('auth.login') }}">
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                            <input type="email" class="form-control" id="email" name="email" required>
+                    <div class="md-form-field mb-4">
+                        <label for="email" class="md-input-label">Email</label>
+                        <input type="email" class="md-input" id="email" name="email" required placeholder="Введите email">
+                    </div>
+                    
+                    <div class="md-form-field mb-4">
+                        <label for="password" class="md-input-label">Пароль</label>
+                        <input type="password" class="md-input" id="password" name="password" required placeholder="Введите пароль">
+                    </div>
+                    
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="remember" name="remember">
+                            <label class="form-check-label" for="remember">
+                                Запомнить меня
+                            </label>
                         </div>
+                        <a href="#" class="text-decoration-none" style="color: var(--md-secondary);">Забыли пароль?</a>
                     </div>
                     
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Пароль</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                            <input type="password" class="form-control" id="password" name="password" required>
-                        </div>
-                    </div>
-                    
-                    <div class="mb-4 form-check">
-                        <input type="checkbox" class="form-check-input" id="remember" name="remember">
-                        <label class="form-check-label" for="remember">Запомнить меня</label>
-                    </div>
-                    
-                    <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-primary btn-lg">Войти</button>
-                    </div>
+                    <button type="submit" class="md-btn md-btn-primary w-100">Войти</button>
                 </form>
-                
-                <div class="mt-4 text-center">
-                    <p>Нет аккаунта? <a href="{{ url_for('auth.register') }}">Зарегистрироваться</a></p>
-                </div>
+            </div>
+            <div class="md-card-footer text-center">
+                <p class="mb-0">Нет аккаунта? <a href="{{ url_for('auth.register') }}" class="text-decoration-none" style="color: var(--md-secondary);">Зарегистрироваться</a></p>
+            </div>
+        </div>
+        
+        <!-- Tinkoff-style brand card -->
+        <div class="md-card mt-4 p-3 text-center" style="background-color: var(--md-primary);">
+            <div class="d-flex align-items-center justify-content-center">
+                <i class="fas fa-shield-alt fa-2x me-2" style="color: var(--md-on-primary);"></i>
+                <p class="mb-0 fw-bold" style="color: var(--md-on-primary);">Безопасный вход с защитой данных</p>
             </div>
         </div>
     </div>
