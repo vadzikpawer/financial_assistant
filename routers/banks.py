@@ -195,36 +195,49 @@ def recommendations():
     from models import Recommendation
     recommendations = Recommendation.query.filter_by(user_id=current_user.id).order_by(Recommendation.created_at.desc()).all()
     
+    # Track whether we're using AI recommendations
+    using_ai = False
+    
     # Generate new recommendations if none exist
     if not recommendations:
-        # Check if OpenAI API key is available and use AI recommendations
-        if os.environ.get("OPENAI_API_KEY"):
-            from services.ai_recommendation import generate_ai_recommendations
-            generate_ai_recommendations(current_user.id)
-        else:
-            # Fall back to rule-based recommendations
-            from services.recommendation_engine import generate_recommendations
-            generate_recommendations(current_user.id)
-            
-        recommendations = Recommendation.query.filter_by(user_id=current_user.id).order_by(Recommendation.created_at.desc()).all()
-    
-    # Check if we're using AI recommendations
-    using_ai = os.environ.get("OPENAI_API_KEY") is not None
+        try:
+            # Check if OpenAI API key is available and use AI recommendations
+            if os.environ.get("OPENAI_API_KEY"):
+                from services.ai_recommendation import generate_ai_recommendations
+                count, using_ai = generate_ai_recommendations(current_user.id)
+                logger.info(f"Generated {count} AI recommendations, using_ai={using_ai}")
+            else:
+                # Fall back to rule-based recommendations
+                from services.recommendation_engine import generate_recommendations
+                count = generate_recommendations(current_user.id)
+                logger.info(f"Generated {count} rule-based recommendations")
+                
+            recommendations = Recommendation.query.filter_by(user_id=current_user.id).order_by(Recommendation.created_at.desc()).all()
+        except Exception as e:
+            logger.error(f"Error generating recommendations: {str(e)}", exc_info=True)
+            flash("Произошла ошибка при создании рекомендаций. Пожалуйста, попробуйте позже.", "danger")
     
     return render_template('recommendations.html', recommendations=recommendations, using_ai=using_ai)
 
 @banks_bp.route('/recommendations/generate', methods=['POST'])
 @login_required
 def generate_new_recommendations():
-    # Check if we should use AI-powered recommendations
-    if os.environ.get("OPENAI_API_KEY"):
-        from services.ai_recommendation import generate_ai_recommendations
-        count = generate_ai_recommendations(current_user.id)
-        flash(f'Generated {count} новых ИИ-рекомендаций для вас.', 'success')
-    else:
-        # Fall back to rule-based recommendations
-        from services.recommendation_engine import generate_recommendations
-        count = generate_recommendations(current_user.id)
-        flash(f'Generated {count} новых рекомендаций для вас.', 'success')
+    try:
+        # Check if we should use AI-powered recommendations
+        if os.environ.get("OPENAI_API_KEY"):
+            from services.ai_recommendation import generate_ai_recommendations
+            count, using_ai = generate_ai_recommendations(current_user.id)
+            if using_ai:
+                flash(f'Сгенерировано {count} новых ИИ-рекомендаций для вас.', 'success')
+            else:
+                flash(f'Сгенерировано {count} новых рекомендаций для вас. ИИ временно недоступен, использованы стандартные рекомендации.', 'info')
+        else:
+            # Fall back to rule-based recommendations
+            from services.recommendation_engine import generate_recommendations
+            count = generate_recommendations(current_user.id)
+            flash(f'Сгенерировано {count} новых рекомендаций для вас.', 'success')
+    except Exception as e:
+        logger.error(f"Error generating recommendations: {str(e)}", exc_info=True)
+        flash("Произошла ошибка при создании рекомендаций. Пожалуйста, попробуйте позже.", "danger")
     
     return redirect(url_for('banks.recommendations'))
