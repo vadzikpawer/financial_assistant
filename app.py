@@ -48,6 +48,35 @@ login_manager.init_app(app)
 login_manager.login_view = "auth.login"
 login_manager.login_message_category = "info"
 
+# Add security headers
+@app.after_request
+def add_security_headers(response):
+    """Add security headers to every response"""
+    # Content Security Policy
+    csp = (
+        "default-src 'self'; "
+        "script-src 'self' https://cdn.jsdelivr.net 'unsafe-inline'; "
+        "style-src 'self' https://cdn.jsdelivr.net https://fonts.googleapis.com 'unsafe-inline'; "
+        "font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net; "
+        "img-src 'self' data:; "
+        "connect-src 'self'"
+    )
+    response.headers["Content-Security-Policy"] = csp
+    
+    # Prevent XSS attacks
+    response.headers["X-XSS-Protection"] = "1; mode=block"
+    
+    # Prevent click-jacking
+    response.headers["X-Frame-Options"] = "SAMEORIGIN"
+    
+    # Prevent MIME-sniffing
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    
+    # Referrer policy
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    
+    return response
+
 
 # Add Jinja2 format_number filter
 @app.template_filter("format_number")

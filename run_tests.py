@@ -1,4 +1,4 @@
-import unittest
+import pytest
 import coverage
 import sys
 
@@ -12,10 +12,8 @@ def run_tests_with_coverage():
     )
     cov.start()
 
-    # Discover and run tests
-    loader = unittest.TestLoader()
-    suite = loader.discover("tests")
-    result = unittest.TextTestRunner(verbosity=2).run(suite)
+    # Run tests with pytest
+    exit_code = pytest.main(["-xvs", "tests"])
 
     # Stop coverage measurement
     cov.stop()
@@ -29,8 +27,8 @@ def run_tests_with_coverage():
     cov.html_report(directory="coverage_report")
     print("HTML coverage report generated in coverage_report directory")
 
-    # Return exit code based on test result
-    return 0 if result.wasSuccessful() else 1
+    # Return exit code from pytest
+    return exit_code
 
 
 if __name__ == "__main__":
