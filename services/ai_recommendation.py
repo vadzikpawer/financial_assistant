@@ -232,7 +232,8 @@ def get_recommendations_from_deepseek(financial_data):
         """
         
         # Call DeepSeek API
-        response = deepseek_client.chat(
+        # The chat object is not callable, we need to use the create method
+        response = deepseek_client.chat.create(
             model="deepseek-chat",
             messages=[
                 {"role": "system", "content": system_prompt},
