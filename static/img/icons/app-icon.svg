@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="512" height="512" rx="100" fill="#212529"/>
+  
+  <!-- Wallet Icon -->
+  <path d="M424 112H88C65.92 112 48 129.92 48 152V360C48 382.08 65.92 400 88 400H424C446.08 400 464 382.08 464 360V152C464 129.92 446.08 112 424 112Z" fill="#4361EE" stroke="#FFFFFF" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Wallet Front Flap -->
+  <path d="M464 208H368C341.52 208 320 229.52 320 256V256C320 282.48 341.52 304 368 304H464V208Z" fill="#3A0CA3" stroke="#FFFFFF" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Coins -->
+  <circle cx="368" cy="256" r="24" fill="#F1FAEE" stroke="#FFFFFF" stroke-width="8"/>
+  <circle cx="176" cy="240" r="48" fill="#F72585" stroke="#FFFFFF" stroke-width="12"/>
+  <circle cx="224" cy="304" r="32" fill="#4CC9F0" stroke="#FFFFFF" stroke-width="10"/>
+  
+  <!-- Ruble Symbol -->
+  <path d="M176 208V272M153 224H199M153 248H190C203.255 248 214 237.255 214 224V224C214 210.745 203.255 200 190 200H153" stroke="#FFFFFF" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

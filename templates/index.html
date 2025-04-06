@@ -10,13 +10,16 @@
             ФинАссистент — это умный помощник для анализа ваших финансов, который подключается к российским банкам
             и помогает экономить деньги благодаря искусственному интеллекту.
         </p>
-        <div class="d-flex gap-3">
+        <div class="d-flex gap-3 flex-wrap">
             <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg px-4">
                 Начать бесплатно
             </a>
             <a href="{{ url_for('auth.login') }}" class="btn btn-outline-secondary btn-lg px-4">
                 Войти
             </a>
+            <button id="install-button" class="btn btn-success btn-lg px-4 d-none btn-vibrate">
+                <i class="fas fa-download me-2"></i> Установить приложение
+            </button>
         </div>
     </div>
     <div class="col-md-6 text-center">
@@ -46,7 +49,7 @@
     <h2 class="mb-5">Почему ФинАссистент?</h2>
     
     <div class="col-md-4 mb-4">
-        <div class="card h-100 border-0 bg-dark">
+        <div class="card h-100 border-0 bg-dark card-hover">
             <div class="card-body p-4">
                 <div class="mb-3">
                     <i class="fas fa-university fa-3x text-primary"></i>
@@ -58,7 +61,7 @@
     </div>
     
     <div class="col-md-4 mb-4">
-        <div class="card h-100 border-0 bg-dark">
+        <div class="card h-100 border-0 bg-dark card-hover">
             <div class="card-body p-4">
                 <div class="mb-3">
                     <i class="fas fa-brain fa-3x text-primary"></i>
@@ -70,7 +73,7 @@
     </div>
     
     <div class="col-md-4 mb-4">
-        <div class="card h-100 border-0 bg-dark">
+        <div class="card h-100 border-0 bg-dark card-hover">
             <div class="card-body p-4">
                 <div class="mb-3">
                     <i class="fas fa-piggy-bank fa-3x text-primary"></i>
@@ -145,13 +148,29 @@
     </div>
 </div>
 
+<!-- PWA Installation Card - Only visible on mobile -->
+<div class="row my-5 d-md-none">
+    <div class="col-12">
+        <div class="card bg-primary text-white border-0">
+            <div class="card-body p-4 text-center">
+                <h3 class="card-title">Установите мобильное приложение</h3>
+                <p class="card-text">Получите доступ к ФинАссистенту с вашего домашнего экрана, с полной поддержкой офлайн-режима и push-уведомлениями.</p>
+                <button id="install-button-mobile" class="btn btn-light btn-lg px-4 mt-2 btn-vibrate">
+                    <i class="fas fa-download me-2"></i> Установить
+                </button>
+                <p class="mt-3 small">Работает на Android и iOS через Chrome, Safari и другие современные браузеры.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
 <hr class="my-5">
 
 <div class="row text-center py-4">
     <h2 class="mb-4">Готовы взять контроль над своими финансами?</h2>
     <p class="lead mb-4">Зарегистрируйтесь бесплатно и начните экономить уже сегодня.</p>
-    <div class="d-flex justify-content-center gap-3">
-        <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg px-4">
+    <div class="d-flex justify-content-center gap-3 flex-wrap">
+        <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg px-4 btn-vibrate">
             Создать аккаунт
         </a>
         <a href="#" class="btn btn-outline-secondary btn-lg px-4">
@@ -159,4 +178,29 @@
         </a>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Connect the mobile install button
+    document.addEventListener('DOMContentLoaded', function() {
+        const mobileInstallBtn = document.getElementById('install-button-mobile');
+        if (mobileInstallBtn) {
+            mobileInstallBtn.addEventListener('click', () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    
+                    deferredPrompt.userChoice.then((choiceResult) => {
+                        if (choiceResult.outcome === 'accepted') {
+                            console.log('User accepted the install prompt');
+                        } else {
+                            console.log('User dismissed the install prompt');
+                        }
+                        deferredPrompt = null;
+                    });
+                }
+            });
+        }
+    });
+</script>
 {% endblock %}

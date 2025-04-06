@@ -80,7 +80,7 @@ def generate_ai_recommendations(user_id):
             'description': t.description,
             'merchant': t.merchant,
             'category_id': t.category_id,
-            'category_name': categories.get(t.category_id).name if t.category_id and t.category_id in categories else "Unknown",
+            'category_name': categories[t.category_id].name if t.category_id and t.category_id in categories else "Unknown",
             'is_expense': t.is_expense,
             'account_id': t.account_id
         } for t in transactions]

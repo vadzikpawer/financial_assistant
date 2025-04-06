@@ -220,3 +220,168 @@
         font-size: 1.8rem;
     }
 }
+
+/* Mobile optimization improvements */
+@media (max-width: 576px) {
+  /* Adjust padding for smaller screens */
+  .container {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  
+  /* Make buttons larger for touch targets */
+  .btn {
+    padding: 0.5rem 0.75rem;
+    font-size: 1rem;
+  }
+  
+  /* Adjust chart sizing */
+  .chart-container {
+    height: 250px;
+  }
+  
+  /* Stack grid items */
+  .row {
+    margin-left: -5px;
+    margin-right: -5px;
+  }
+  
+  .col, .col-1, .col-2, .col-3, .col-4, .col-5, .col-6,
+  .col-7, .col-8, .col-9, .col-10, .col-11, .col-12,
+  .col-sm, .col-md, .col-lg, .col-xl {
+    padding-left: 5px;
+    padding-right: 5px;
+    margin-bottom: 10px;
+  }
+  
+  /* Adjust table display for small screens */
+  .table-responsive-sm {
+    font-size: 0.875rem;
+  }
+  
+  /* Navbar adjustments */
+  .navbar-brand {
+    font-size: 1.25rem;
+  }
+  
+  /* Adjust form elements */
+  .form-control {
+    font-size: 1rem;
+    height: calc(2.5rem + 2px);
+  }
+  
+  /* Adjust spacing */
+  .mb-4 {
+    margin-bottom: 1rem !important;
+  }
+  
+  .mt-4 {
+    margin-top: 1rem !important;
+  }
+  
+  /* Ensure tables are scrollable */
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* PWA improvements */
+/* Handle display: standalone mode better */
+@media all and (display-mode: standalone) {
+  /* Hide browser-specific elements or features */
+  .browser-only {
+    display: none !important;
+  }
+  
+  /* Add extra padding to account for status bar */
+  body {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+  
+  /* Make app feel more native */
+  .app-bar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+  
+  /* Bottom navigation for mobile app feeling */
+  .mobile-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: var(--bs-dark);
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+  }
+  
+  .mobile-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--bs-light);
+    text-decoration: none;
+    font-size: 0.75rem;
+  }
+  
+  .mobile-nav-item i {
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+  }
+  
+  /* Add bottom padding when mobile nav is visible */
+  main {
+    padding-bottom: 70px;
+  }
+}
+
+/* Improve offline experience */
+.offline-indicator {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--bs-danger);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 50px;
+  z-index: 2000;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+body.offline .offline-indicator {
+  display: block;
+}
+
+/* Skeleton loading placeholders for better perceived performance */
+.skeleton-text {
+  height: 1rem;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(90deg, #495057 25%, #6c757d 50%, #495057 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  border-radius: 4px;
+}
+
+.skeleton-circle {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(90deg, #495057 25%, #6c757d 50%, #495057 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+}
+
+@keyframes skeleton-loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
