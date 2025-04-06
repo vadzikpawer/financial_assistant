@@ -27,28 +27,50 @@ def init_categories():
     try:
         # Check if categories exist
         category_count = Category.query.count()
+        
+        # Log current state
+        logger.debug(f"Checking categories: found {category_count} existing categories")
+        
+        # Create default categories dictionary with icons
+        default_categories = {}
+        for category_name in CATEGORY_KEYWORDS.keys():
+            icon = get_category_icon(category_name)
+            default_categories[category_name] = icon
+        
+        # Add special categories
+        default_categories["Другое"] = "question-circle"
+        default_categories["Доход"] = "arrow-down"
+        
         if category_count == 0:
-            # Create categories
-            for category_name, keywords in CATEGORY_KEYWORDS.items():
-                # Determine icon based on category name
-                icon = get_category_icon(category_name)
+            # Create all categories if none exist
+            for category_name, icon in default_categories.items():
                 category = Category(name=category_name, icon=icon)
                 db.session.add(category)
-            
-            # Add "Other" category
-            category = Category(name="Другое", icon="question-circle")
-            db.session.add(category)
-            
-            # Add "Income" category
-            category = Category(name="Доход", icon="arrow-down")
-            db.session.add(category)
-            
+                
             db.session.commit()
-            logger.info(f"Initialized {len(CATEGORY_KEYWORDS) + 2} categories")
-        
-        return True
+            logger.info(f"Initialized {len(default_categories)} categories from scratch")
+            return True
+        else:
+            # Check for any missing categories and add them
+            existing_categories = {cat.name: cat for cat in Category.query.all()}
+            categories_added = 0
+            
+            for category_name, icon in default_categories.items():
+                if category_name not in existing_categories:
+                    category = Category(name=category_name, icon=icon)
+                    db.session.add(category)
+                    categories_added += 1
+            
+            if categories_added > 0:
+                db.session.commit()
+                logger.info(f"Added {categories_added} missing categories")
+            else:
+                logger.debug("All categories already exist, nothing to add")
+            
+            return True
     except Exception as e:
         logger.error(f"Error initializing categories: {str(e)}")
+        db.session.rollback()
         return False
 
 def get_category_icon(category_name):

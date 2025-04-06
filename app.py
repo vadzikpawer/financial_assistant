@@ -58,6 +58,10 @@ with app.app_context():
     # Create database tables
     db.create_all()
     
+    # Initialize categories
+    from services.transaction_analyzer import init_categories
+    init_categories()
+    
     # Import and register blueprints
     from routers.auth import auth_bp
     from routers.dashboard import dashboard_bp

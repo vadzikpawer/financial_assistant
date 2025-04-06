@@ -436,6 +436,18 @@ def sync_account_data(bank_name, access_token, account_number, account_id):
                     transaction_data.get("merchant", "")
                 )
                 
+                # Make sure we have a valid category_id
+                if category_id is None:
+                    # Use the "Other" category if categorization fails
+                    from models import Category
+                    other_category = Category.query.filter_by(name="Другое").first()
+                    if other_category:
+                        category_id = other_category.id
+                    else:
+                        # If we somehow don't have an "Other" category, log error and skip
+                        logger.error("Failed to find 'Other' category")
+                        continue
+                
                 # Create new transaction
                 new_transaction = Transaction(
                     account_id=account_id,

@@ -1,3 +1,4 @@
+import logging
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flask_login import login_required, current_user
 from app import db
@@ -11,6 +12,9 @@ from services.bank_api import (
 )
 from services.transaction_analyzer import categorize_transaction
 from datetime import datetime
+
+# Configure logger
+logger = logging.getLogger(__name__)
 
 banks_bp = Blueprint('banks', __name__)
 
@@ -99,6 +103,18 @@ def connect_bank():
                             transaction_data['description'],
                             transaction_data.get('merchant', '')
                         )
+                        
+                        # Make sure we have a valid category_id
+                        if category_id is None:
+                            # Use the "Other" category if categorization fails
+                            from models import Category
+                            other_category = Category.query.filter_by(name="Другое").first()
+                            if other_category:
+                                category_id = other_category.id
+                            else:
+                                # If we somehow don't have an "Other" category, log error
+                                logger.error("Failed to find 'Other' category")
+                                continue
                         
                         # Create new transaction
                         new_transaction = Transaction(
