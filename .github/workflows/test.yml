@@ -54,8 +54,7 @@ jobs:
         DATABASE_URL: postgresql://testuser:testpass@localhost:5432/testdb
         FLASK_ENV: testing
         SESSION_SECRET: testsecretkey
-      run: |
-        python run_tests.py
+      run: pytest tests --doctest-modules --junitxml=junit/test-results-${{ matrix.python-version }}.xml
         
     - name: Upload coverage reports
       uses: actions/upload-artifact@v4
