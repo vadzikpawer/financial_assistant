@@ -1,15 +1,16 @@
 name: Build Docker Image
 
 on:
-  push:
-    branches: [ main ]
-    tags: [ 'v*' ]
+  workflow_run:
+    workflows: [Run Tests]
+    types:
+      - completed
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    
     - name: Build Docker image
-      run: |
-        echo "Building Docker image..."
+      run: docker build -t financial_app:latest .
