@@ -47,7 +47,11 @@
 
 3. Установить зависимости:
    ```bash
-   pip install -e .
+   # Для разработки
+   pip install -r dev-requirements.txt -e .
+   
+   # Для продакшена
+   pip install -r requirements.txt
    ```
 
 4. Создать файл `.env` с необходимыми переменными окружения:
