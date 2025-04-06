@@ -18,6 +18,7 @@ dependencies = [
     "openai>=1.70.0",
     "deepseek-ai>=0.0.1",
     "python-dotenv>=1.1.0",
+    "deeperseek",
 ]
 
 [[tool.uv.index]]
@@ -1141,3 +1142,4 @@ yta-general-utils = [{ index = "pytorch-cpu", marker = "platform_system == 'Linu
 zensvi = [{ index = "pytorch-cpu", marker = "platform_system == 'Linux'" }]
 zetascale = [{ index = "pytorch-cpu", marker = "platform_system == 'Linux'" }]
 zuko = [{ index = "pytorch-cpu", marker = "platform_system == 'Linux'" }]
+deeperseek = { git = "https://github.com/theAbdoSabbagh/DeeperSeek.git" }
